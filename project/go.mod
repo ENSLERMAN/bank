@@ -1,12 +1,14 @@
-module github.com/ENSLERMAN/soft-eng
+module github.com/ENSLERMAN/soft-eng/project
 
 go 1.14
 
 require (
-	github.com/golang/protobuf v1.3.5 // indirect
-	golang.org/x/net v0.0.0-20200324143707-d3edc9973b7e // indirect
+	github.com/BurntSushi/toml v0.3.1
+	github.com/gorilla/mux v1.7.4
+	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
+	github.com/sirupsen/logrus v1.5.0
+	github.com/stretchr/objx v0.2.0 // indirect
+	github.com/stretchr/testify v1.5.1
 	golang.org/x/sys v0.0.0-20200409092240-59c9f1ba88fa // indirect
-	golang.org/x/text v0.3.2 // indirect
-	google.golang.org/genproto v0.0.0-20200413115906-b5235f65be36 // indirect
-	google.golang.org/grpc v1.28.1 // indirect
+	gopkg.in/yaml.v2 v2.2.8 // indirect
 )
