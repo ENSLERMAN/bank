@@ -17,6 +17,7 @@ func New(config *Config) *Store {
 	}
 }
 
+// Open открытие соединения с бд
 func (s *Store) Open() error {
 	db, err := sqlx.Open("postgres", s.config.DatabaseURL)
 	if err != nil {
@@ -32,6 +33,7 @@ func (s *Store) Open() error {
 	return nil
 }
 
+// Close закрытие соединения с бд
 func (s *Store) Close() {
 	s.db.Close()
 }

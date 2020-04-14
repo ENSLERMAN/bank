@@ -7,7 +7,15 @@ type UserRepository struct {
 }
 
 func (r *UserRepository) Create(u *model.User) (*model.User, error) {
-	if err := r.store.db.QueryRow(`INSERT INTO bank.clients 
+	if err := u.Validate(); err != nil {
+		return nil, err
+	}
+
+	if err := u.BeforeCreate(); err != nil {
+		return nil, err
+	}
+
+	if err := r.store.db.QueryRowx(`INSERT INTO bank.clients 
 		(login, password, name, surname, patronymic, passport)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
 		u.Login, u.EncryptedPassword, u.Name, u.Surname, u.Patronymic, u.Passport,
@@ -20,16 +28,16 @@ func (r *UserRepository) Create(u *model.User) (*model.User, error) {
 
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	u := &model.User{}
-	if err := r.store.db.QueryRow(
-		`SELECT id, login, surname, name, patronymic FROM banks.clients WHERE login = $1`,
+	if err := r.store.db.QueryRowx(
+		`SELECT id, login, surname, name, patronymic FROM bank.clients WHERE login = $1`,
 		login,
-		).Scan(
-			&u.ID,
-			&u.Login,
-			&u.Surname,
-			&u.Name,
-			&u.Patronymic,
-		); err != nil {
+	).Scan(
+		&u.ID,
+		&u.Login,
+		&u.Surname,
+		&u.Name,
+		&u.Patronymic,
+	); err != nil {
 		return nil, err
 	}
 	return u, nil
