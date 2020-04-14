@@ -3,6 +3,7 @@ package apiserver
 import (
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/store/sqlstore"
 	"github.com/jmoiron/sqlx"
+	_ "github.com/lib/pq"
 	"net/http"
 )
 
@@ -24,11 +25,10 @@ func newDB(databaseURL string) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	defer db.Close()
-
 	if err := db.Ping(); err != nil {
 		return nil, err
 	}
 
+	defer db.Close()
 	return db, err
 }
