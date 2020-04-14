@@ -1,18 +1,22 @@
-package store
+package sqlstore
 
-import "github.com/ENSLERMAN/soft-eng/project/internal/app/model"
+import (
+	"database/sql"
+	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
+	"github.com/ENSLERMAN/soft-eng/project/internal/app/store"
+)
 
 type UserRepository struct {
 	store *Store
 }
 
-func (r *UserRepository) Create(u *model.User) (*model.User, error) {
+func (r *UserRepository) Create(u *model.User) error {
 	if err := u.Validate(); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := u.BeforeCreate(); err != nil {
-		return nil, err
+		return err
 	}
 
 	if err := r.store.db.QueryRowx(`INSERT INTO bank.clients 
@@ -20,10 +24,10 @@ func (r *UserRepository) Create(u *model.User) (*model.User, error) {
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
 		u.Login, u.EncryptedPassword, u.Name, u.Surname, u.Patronymic, u.Passport,
 	).Scan(&u.ID); err != nil {
-		return nil, err
+		return err
 	}
 
-	return u, nil
+	return nil
 }
 
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
@@ -38,6 +42,9 @@ func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 		&u.Name,
 		&u.Patronymic,
 	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
 		return nil, err
 	}
 	return u, nil
