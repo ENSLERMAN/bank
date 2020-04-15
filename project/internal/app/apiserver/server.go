@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/store"
 	"github.com/google/uuid"
@@ -12,34 +13,35 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"strconv"
 	"time"
 )
 
 const (
-	sessionName = "bank-system"
-	ctxKeyUser ctxKey = iota
+	sessionName        = "bank-system"
+	ctxKeyUser  ctxKey = iota
 	ctxKeyRequestID
 )
 
 var (
 	errIncorrectLoginOrPassword = errors.New("incorrect login or password")
-	errNotAuthenticated = errors.New("not authenticated")
+	errNotAuthenticated         = errors.New("not authenticated")
 )
 
 type ctxKey int8
 
 type server struct {
-	router *mux.Router
-	logger *logrus.Logger
-	store  store.Store
+	router       *mux.Router
+	logger       *logrus.Logger
+	store        store.Store
 	sessionStore sessions.Store
 }
 
 func newServer(store store.Store, sessionStore sessions.Store) *server {
 	s := &server{
-		router: mux.NewRouter(),
-		logger: logrus.New(),
-		store:  store,
+		router:       mux.NewRouter(),
+		logger:       logrus.New(),
+		store:        store,
 		sessionStore: sessionStore,
 	}
 
@@ -62,6 +64,7 @@ func (s *server) configureRouter() {
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
+	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST")
 }
 
 func (s *server) handleWhoami() http.HandlerFunc {
@@ -72,21 +75,21 @@ func (s *server) handleWhoami() http.HandlerFunc {
 
 func (s *server) logRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
- 		logger := s.logger.WithFields(logrus.Fields{
- 			"remote_addr": r.RemoteAddr,
- 			"request_id": r.Context().Value(ctxKeyRequestID),
+		logger := s.logger.WithFields(logrus.Fields{
+			"remote_addr": r.RemoteAddr,
+			"request_id":  r.Context().Value(ctxKeyRequestID),
 		})
- 		logger.Infof("started %s %s", r.Method, r.RequestURI)
+		logger.Infof("started %s %s", r.Method, r.RequestURI)
 
- 		start := time.Now()
- 		rw := &responseWriter{w, http.StatusOK}
- 		next.ServeHTTP(rw, r)
+		start := time.Now()
+		rw := &responseWriter{w, http.StatusOK}
+		next.ServeHTTP(rw, r)
 
- 		logger.Infof(
- 			"completed with %d %s in %v",
- 			rw.code,
- 			http.StatusText(rw.code),
- 			time.Now().Sub(start),
+		logger.Infof(
+			"completed with %d %s in %v",
+			rw.code,
+			http.StatusText(rw.code),
+			time.Now().Sub(start),
 		)
 	})
 }
@@ -130,6 +133,38 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 		}
 
 		u.Sanitaze()
+		s.respond(w, r, http.StatusCreated, u)
+	}
+}
+
+func (s *server) handleBillCreate() http.HandlerFunc {
+	type request struct {
+		Type int `json:"type"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &request{}
+		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		u := &model.Bill{
+			Type:     req.Type,
+			Number:   model.RandomizeCardNumber(),
+		}
+
+		if err := s.store.Bill().CreateBill(u, userID); err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
 		s.respond(w, r, http.StatusCreated, u)
 	}
 }

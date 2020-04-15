@@ -19,11 +19,30 @@ func (r *UserRepository) Create(u *model.User) error {
 		return err
 	}
 
-	return r.store.db.QueryRowx(`INSERT INTO bank.clients 
+	b := &model.Bill{}
+	number := model.RandomizeCardNumber()
+
+	if err := r.store.db.QueryRowx(`INSERT INTO bank.clients 
 		(login, password, name, surname, patronymic, passport)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
 		u.Login, u.EncryptedPassword, u.Name, u.Surname, u.Patronymic, u.Passport,
-	).Scan(&u.ID)
+	).Scan(&u.ID); err != nil {
+		return err
+	}
+
+	if err := r.store.db.QueryRowx(`INSERT INTO bank.bills 
+		(type_bill, number_bill, balance)
+		VALUES ($1, $2, $3) RETURNING id`,
+		1, number, 0,
+	).Scan(&b.ID); err != nil {
+		return err
+	}
+
+	return r.store.db.QueryRowx(`INSERT INTO bank.clients_bills 
+		(bill_id, userid)
+		VALUES ($1, $2)`,
+		&b.ID, &u.ID,
+	).Scan()
 }
 
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {

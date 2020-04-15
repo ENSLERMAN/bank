@@ -9,6 +9,7 @@ import (
 type Store struct {
 	db             *sqlx.DB
 	UserRepository *UserRepository
+	BillRepository *BillRepository
 }
 
 func New(db *sqlx.DB) *Store {
@@ -25,4 +26,14 @@ func (s *Store) User() store.UserRepository {
 	s.UserRepository = &UserRepository{store: s}
 
 	return s.UserRepository
+}
+
+func (s *Store) Bill() store.BillRepository {
+	if s.BillRepository != nil {
+		return s.BillRepository
+	}
+
+	s.BillRepository = &BillRepository{store: s}
+
+	return s.BillRepository
 }

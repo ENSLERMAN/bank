@@ -7,3 +7,7 @@ type UserRepository interface {
 	FindByID(int) (*model.User, error)
 	FindByLogin(string) (*model.User, error)
 }
+
+type BillRepository interface {
+	CreateBill(*model.Bill, int) error
+}

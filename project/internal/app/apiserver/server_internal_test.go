@@ -72,8 +72,8 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 		{
 			name: "valid",
 			payload: map[string]string{
-				"login":      u.Login,
-				"password":   u.Password,
+				"login":    u.Login,
+				"password": u.Password,
 			},
 			expectedCode: http.StatusOK,
 		},
@@ -85,7 +85,7 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 		{
 			name: "invalid login",
 			payload: map[string]string{
-				"login": "tes",
+				"login":    "tes",
 				"password": u.Password,
 			},
 			expectedCode: http.StatusUnauthorized,
@@ -93,7 +93,7 @@ func TestServer_HandleSessionsCreate(t *testing.T) {
 		{
 			name: "invalid password",
 			payload: map[string]string{
-				"login": u.Login,
+				"login":    u.Login,
 				"password": "asdsadadsdadas",
 			},
 			expectedCode: http.StatusUnauthorized,
@@ -118,8 +118,8 @@ func TestServer_ServeAuthenticateUser(t *testing.T) {
 	store.User().Create(u)
 
 	testCases := []struct {
-		name string
-		cookieValue map[interface{}]interface{}
+		name         string
+		cookieValue  map[interface{}]interface{}
 		expectedCode int
 	}{
 		{
@@ -130,8 +130,8 @@ func TestServer_ServeAuthenticateUser(t *testing.T) {
 			expectedCode: http.StatusOK,
 		},
 		{
-			name: "not authenticated",
-			cookieValue: nil,
+			name:         "not authenticated",
+			cookieValue:  nil,
 			expectedCode: http.StatusUnauthorized,
 		},
 	}
