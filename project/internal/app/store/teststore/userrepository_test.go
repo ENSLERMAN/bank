@@ -28,3 +28,12 @@ func TestUserRepository_FindByLogin(t *testing.T) {
 	assert.NoError(t, err)
 	assert.NotNil(t, u)
 }
+
+func TestUserRepository_FindByID(t *testing.T) {
+	s := teststore.New()
+	u1 := model.TestUser(t)
+	s.User().Create(u1)
+	u2, err := s.User().FindByID(u1.ID)
+	assert.NoError(t, err)
+	assert.NotNil(t, u2)
+}

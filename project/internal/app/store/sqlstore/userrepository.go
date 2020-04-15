@@ -47,3 +47,25 @@ func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	}
 	return u, nil
 }
+
+func (r *UserRepository) FindByID(id int) (*model.User, error) {
+	u := &model.User{}
+	if err := r.store.db.QueryRowx(
+		`SELECT id, login, surname, name, patronymic, passport, password FROM bank.clients WHERE id = $1`,
+		id,
+	).Scan(
+		&u.ID,
+		&u.Login,
+		&u.Surname,
+		&u.Name,
+		&u.Patronymic,
+		&u.Passport,
+		&u.EncryptedPassword,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+		return nil, err
+	}
+	return u, nil
+}

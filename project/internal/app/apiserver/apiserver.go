@@ -5,6 +5,7 @@ import (
 	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
+	"github.com/sirupsen/logrus"
 	"net/http"
 )
 
@@ -18,6 +19,7 @@ func Start(config *Config) error {
 	store := sqlstore.New(db)
 	sessionsStore := sessions.NewCookieStore([]byte(config.SessionKey))
 	srv := newServer(store, sessionsStore)
+	logrus.Infof("started server http://localhost%s", config.BindAddr)
 
 	return http.ListenAndServe(config.BindAddr, srv)
 }
