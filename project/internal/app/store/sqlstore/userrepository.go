@@ -19,21 +19,17 @@ func (r *UserRepository) Create(u *model.User) error {
 		return err
 	}
 
-	if err := r.store.db.QueryRowx(`INSERT INTO bank.clients 
+	return r.store.db.QueryRowx(`INSERT INTO bank.clients 
 		(login, password, name, surname, patronymic, passport)
 		VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
 		u.Login, u.EncryptedPassword, u.Name, u.Surname, u.Patronymic, u.Passport,
-	).Scan(&u.ID); err != nil {
-		return err
-	}
-
-	return nil
+	).Scan(&u.ID)
 }
 
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	u := &model.User{}
 	if err := r.store.db.QueryRowx(
-		`SELECT id, login, surname, name, patronymic FROM bank.clients WHERE login = $1`,
+		`SELECT id, login, surname, name, patronymic, passport, password FROM bank.clients WHERE login = $1`,
 		login,
 	).Scan(
 		&u.ID,
@@ -41,6 +37,8 @@ func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 		&u.Surname,
 		&u.Name,
 		&u.Patronymic,
+		&u.Passport,
+		&u.EncryptedPassword,
 	); err != nil {
 		if err == sql.ErrNoRows {
 			return nil, store.ErrRecordNotFound

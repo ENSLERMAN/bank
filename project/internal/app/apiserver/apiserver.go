@@ -2,6 +2,7 @@ package apiserver
 
 import (
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/store/sqlstore"
+	"github.com/gorilla/sessions"
 	"github.com/jmoiron/sqlx"
 	_ "github.com/lib/pq"
 	"net/http"
@@ -13,8 +14,10 @@ func Start(config *Config) error {
 	if err != nil {
 		return err
 	}
+	defer db.Close()
 	store := sqlstore.New(db)
-	srv := newServer(store)
+	sessionsStore := sessions.NewCookieStore([]byte(config.SessionKey))
+	srv := newServer(store, sessionsStore)
 
 	return http.ListenAndServe(config.BindAddr, srv)
 }
@@ -29,6 +32,5 @@ func newDB(databaseURL string) (*sqlx.DB, error) {
 		return nil, err
 	}
 
-	defer db.Close()
-	return db, err
+	return db, nil
 }

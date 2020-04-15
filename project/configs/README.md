@@ -3,7 +3,6 @@
 ````
 bind_addr = ":8080"
 log_level = "debug"
-
-[store]
+session_key = "your key"
 database_url = "host=yourhost dbname=yourdbname sslmode=disable password=password user=user"
 ````

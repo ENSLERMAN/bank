@@ -7,6 +7,7 @@ require (
 	github.com/asaskevich/govalidator v0.0.0-20200108200545-475eaeb16496 // indirect
 	github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 	github.com/gorilla/mux v1.7.4
+	github.com/gorilla/sessions v1.2.0
 	github.com/jmoiron/sqlx v1.2.0
 	github.com/konsorten/go-windows-terminal-sequences v1.0.2 // indirect
 	github.com/lib/pq v1.3.0
