@@ -1,7 +1,9 @@
 package sqlstore
 
 import (
+	"database/sql"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
+	"github.com/ENSLERMAN/soft-eng/project/internal/app/store"
 	"github.com/sirupsen/logrus"
 )
 
@@ -70,4 +72,63 @@ func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 		logrus.Error(err)
 	}
 	return arr, nil
+}
+
+func (r *BillRepository) FindByUser(userID, billID int) (*model.ClientBill, error) {
+	u := &model.ClientBill{}
+	if err := r.store.db.QueryRowx(
+		`SELECT id, user_id, bill_id FROM bank.clients_bills WHERE user_id = $1 and bill_id = $2`,
+		userID, billID,
+	).Scan(
+		&u.ID,
+		&u.UserID,
+		&u.BillID,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+		return nil, err
+	}
+	return u, nil
+}
+
+// TODO: sql: Scan error on column index 0, name \"balance\":
+// TODO: converting driver.Value type []uint8 (\"$1,000.00\") to a float32: invalid syntax"
+func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) error {
+
+	u := &model.Bill{}
+	k := &model.Bill{}
+
+	req := &u.Balance
+	res := &k.Balance
+
+	if err := r.store.db.QueryRowx(`
+		SELECT balance::numeric::float8 from bank.bills WHERE id = $1`, billID,
+	).Scan(
+		req,
+	); err != nil {
+		return err
+	}
+
+	if err := r.store.db.QueryRowx(`
+		SELECT balance::numeric::float8 from bank.bills WHERE number = $1`, NumberDest,
+	).Scan(
+		res,
+	); err != nil {
+		return err
+	}
+
+	_, err := r.store.db.Exec(`UPDATE bank.bills SET balance = $1 WHERE id = $2`,
+		*req - float32(Amount), billID)
+	if err != nil {
+		return err
+	}
+
+	_, err = r.store.db.Exec(`UPDATE bank.bills SET balance = $1 WHERE number = $2`,
+		*res + float32(Amount), NumberDest)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

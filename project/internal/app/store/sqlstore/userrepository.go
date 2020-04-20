@@ -38,11 +38,15 @@ func (r *UserRepository) Create(u *model.User) error {
 		return err
 	}
 
-	return r.store.db.QueryRowx(`INSERT INTO bank.clients_bills 
+	_, err := r.store.db.Exec(`INSERT INTO bank.clients_bills 
 		(bill_id, user_id)
 		VALUES ($1, $2)`,
 		&b.ID, &u.ID,
-	).Scan()
+	)
+	if err != nil {
+		return err
+	}
+	return nil
 }
 
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {

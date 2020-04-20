@@ -11,5 +11,7 @@ type UserRepository interface {
 type BillRepository interface {
 	CreateBill(*model.Bill, int) error
 	GetAllUserBills(int) ([]*model.Bill, error)
+	FindByUser(int, int) (*model.ClientBill, error)
+	TransferMoney(int, uint, int) error
 	DeleteBill(int) error
 }

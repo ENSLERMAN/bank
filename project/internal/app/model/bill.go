@@ -13,6 +13,12 @@ type Bill struct {
 	Balance float32 `json:"money"`
 }
 
+type ClientBill struct {
+	ID int `json:"id"`
+	UserID int `json:"user_id"`
+	BillID int `json:"bill_id"`
+}
+
 func RandomizeCardNumber() int {
 	rand.Seed(time.Now().UnixNano())
 	min := 1000000000000000

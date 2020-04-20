@@ -150,6 +150,18 @@ func (s *server) handleBillDelete() http.HandlerFunc {
 			return
 		}
 
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.Bill().FindByUser(userID, req.BillID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
 		if err := s.store.Bill().DeleteBill(req.BillID); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
@@ -185,5 +197,44 @@ func (s *server) handleGetAllUserBills() http.HandlerFunc {
 		}
 
 		s.respond(w, r, http.StatusOK, u)
+	}
+}
+
+func (s *server) handleSendMoney() http.HandlerFunc {
+
+	type request struct {
+		BillID int `json:"bill_id"`
+		NumberDest int `json:"number_dest"`
+		Amount uint `json:"amount"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		req := &request{}
+		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		// получаем ид юзера из сессии
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+
+		_, err = s.store.Bill().FindByUser(userID, req.BillID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		if err := s.store.Bill().TransferMoney(req.NumberDest, req.Amount, req.BillID); err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, nil)
 	}
 }
