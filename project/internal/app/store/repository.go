@@ -10,4 +10,6 @@ type UserRepository interface {
 
 type BillRepository interface {
 	CreateBill(*model.Bill, int) error
+	GetAllUserBills(int) ([]*model.Bill, error)
+	DeleteBill(int) error
 }

@@ -6,10 +6,11 @@ import (
 )
 
 type Bill struct {
-	ID      int `json:"id"`
-	Type    int `json:"type"`
-	Number  int `json:"number"`
-	Balance int `json:"money"`
+	ID      int     `json:"id"`
+	Type    int     `json:"type"`
+	Name    string  `json:"name"`
+	Number  int     `json:"number"`
+	Balance float32 `json:"money"`
 }
 
 func RandomizeCardNumber() int {
