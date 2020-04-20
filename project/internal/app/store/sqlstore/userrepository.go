@@ -31,7 +31,7 @@ func (r *UserRepository) Create(u *model.User) error {
 	}
 
 	if err := r.store.db.QueryRowx(`INSERT INTO bank.bills 
-		(type_bill, number_bill, balance)
+		(type_bill, number, balance)
 		VALUES ($1, $2, $3) RETURNING id`,
 		1, number, 0,
 	).Scan(&b.ID); err != nil {
@@ -39,7 +39,7 @@ func (r *UserRepository) Create(u *model.User) error {
 	}
 
 	return r.store.db.QueryRowx(`INSERT INTO bank.clients_bills 
-		(bill_id, userid)
+		(bill_id, user_id)
 		VALUES ($1, $2)`,
 		&b.ID, &u.ID,
 	).Scan()
