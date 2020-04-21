@@ -5,6 +5,7 @@ import (
 	"time"
 )
 
+// Bill - структура счета
 type Bill struct {
 	ID      int     `json:"id"`
 	Type    int     `json:"type"`
@@ -13,12 +14,14 @@ type Bill struct {
 	Balance float32 `json:"money"`
 }
 
+// ClientBill - структура таблицы в бд client_bills
 type ClientBill struct {
-	ID int `json:"id"`
+	ID     int `json:"id"`
 	UserID int `json:"user_id"`
 	BillID int `json:"bill_id"`
 }
 
+// RandomizeCardNumber - рандомим номер карты для создания счета
 func RandomizeCardNumber() int {
 	rand.Seed(time.Now().UnixNano())
 	min := 1000000000000000

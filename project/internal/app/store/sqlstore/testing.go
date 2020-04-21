@@ -7,6 +7,7 @@ import (
 	"testing"
 )
 
+// TestDB - тестирование бд
 func TestDB(t *testing.T, databaseURL string) (*sqlx.DB, func(...string)) {
 	t.Helper()
 

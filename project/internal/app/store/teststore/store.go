@@ -7,6 +7,20 @@ import (
 
 type Store struct {
 	UserRepository *UserRepository
+	BillRepository *BillRepository
+}
+
+func (s *Store) Bill() store.BillRepository {
+	if s.BillRepository != nil {
+		return s.BillRepository
+	}
+
+	s.BillRepository = &BillRepository{
+		store: s,
+		bills: make(map[int]*model.Bill),
+	}
+
+	return s.BillRepository
 }
 
 func New() *Store {

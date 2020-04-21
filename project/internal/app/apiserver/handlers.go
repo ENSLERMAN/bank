@@ -9,7 +9,9 @@ import (
 	"strconv"
 )
 
+// handleUsersCreate обработчик - создание клиента
 func (s *server) handleUsersCreate() http.HandlerFunc {
+
 	type request struct {
 		Login      string `json:"login"`
 		Name       string `json:"name"`
@@ -18,8 +20,11 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 		Passport   string `json:"passport"`
 		Password   string `json:"password"`
 	}
+
 	return func(w http.ResponseWriter, r *http.Request) {
+
 		req := &request{}
+		// записываем данные in json
 		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
 			s.error(w, r, http.StatusBadRequest, err)
 			return
@@ -34,16 +39,19 @@ func (s *server) handleUsersCreate() http.HandlerFunc {
 			Password:   req.Password,
 		}
 
+		// кидаем запрос на создание клиента, если не получилось скидываем ошибку 422
 		if err := s.store.User().Create(u); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
 
+		// Sanitaze - нужен для того, шоб затереть пароль после создания клиента
 		u.Sanitaze()
 		s.respond(w, r, http.StatusCreated, u)
 	}
 }
 
+// handleBillCreate обработчик - создание счета пользователя
 func (s *server) handleBillCreate() http.HandlerFunc {
 	type request struct {
 		Type int `json:"type"`
@@ -56,12 +64,12 @@ func (s *server) handleBillCreate() http.HandlerFunc {
 			return
 		}
 
+		// берем из куки ид юзера
 		session, err := s.sessionStore.Get(r, "bank-system")
 		if err != nil {
 			s.error(w, r, http.StatusInternalServerError, err)
 		}
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
-		fmt.Println(userID)
 
 		u := &model.Bill{
 			Type:   req.Type,
@@ -77,6 +85,7 @@ func (s *server) handleBillCreate() http.HandlerFunc {
 	}
 }
 
+// handleSessionsCreate обработчик - создание сессии, проще говоря авторизация юзера
 func (s *server) handleSessionsCreate() http.HandlerFunc {
 	type request struct {
 		Login    string `json:"login"`
@@ -112,6 +121,7 @@ func (s *server) handleSessionsCreate() http.HandlerFunc {
 	}
 }
 
+// authenticateUser - обработчик сессии, проверка ид юзера с бд
 func (s *server) authenticateUser(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		session, err := s.sessionStore.Get(r, sessionName)
@@ -136,9 +146,10 @@ func (s *server) authenticateUser(next http.Handler) http.Handler {
 	})
 }
 
+// handleBillDelete - обработчик закрытия счета
 func (s *server) handleBillDelete() http.HandlerFunc {
+
 	type request struct {
-		UserID int `json:"user_id"`
 		BillID int `json:"bill_id"`
 	}
 
@@ -150,18 +161,21 @@ func (s *server) handleBillDelete() http.HandlerFunc {
 			return
 		}
 
+		// получаем ид юзера из куки
 		session, err := s.sessionStore.Get(r, "bank-system")
 		if err != nil {
 			s.error(w, r, http.StatusInternalServerError, err)
 		}
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
 
+		// если не подходит, кидаем ошибку 401
 		_, err = s.store.Bill().FindByUser(userID, req.BillID)
 		if err != nil {
 			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
 			return
 		}
 
+		// если все подошло, закрываем счет клиента ( просто удаляем )
 		if err := s.store.Bill().DeleteBill(req.BillID); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
@@ -171,6 +185,7 @@ func (s *server) handleBillDelete() http.HandlerFunc {
 	}
 }
 
+// handleGetAllUserBills - обработчик, получаем все счета клиента
 func (s *server) handleGetAllUserBills() http.HandlerFunc {
 	type request struct {
 		UserID string `json:"user_id"`
@@ -200,12 +215,13 @@ func (s *server) handleGetAllUserBills() http.HandlerFunc {
 	}
 }
 
+// handleSendMoney - обработчик перевода денег
 func (s *server) handleSendMoney() http.HandlerFunc {
 
 	type request struct {
-		BillID int `json:"bill_id"`
-		NumberDest int `json:"number_dest"`
-		Amount uint `json:"amount"`
+		BillID     int  `json:"bill_id"`
+		NumberDest int  `json:"number_dest"`
+		Amount     uint `json:"amount"`
 	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -222,7 +238,6 @@ func (s *server) handleSendMoney() http.HandlerFunc {
 			s.error(w, r, http.StatusInternalServerError, err)
 		}
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
-
 
 		_, err = s.store.Bill().FindByUser(userID, req.BillID)
 		if err != nil {

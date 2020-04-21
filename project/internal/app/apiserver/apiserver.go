@@ -9,6 +9,7 @@ import (
 	"net/http"
 )
 
+// Start запускаем сервер
 func Start(config *Config) error {
 
 	db, err := newDB(config.DatabaseURL)
@@ -24,6 +25,7 @@ func Start(config *Config) error {
 	return http.ListenAndServe(config.BindAddr, srv)
 }
 
+// newDB открываем соединение с бд
 func newDB(databaseURL string) (*sqlx.DB, error) {
 	db, err := sqlx.Open("postgres", databaseURL)
 	if err != nil {

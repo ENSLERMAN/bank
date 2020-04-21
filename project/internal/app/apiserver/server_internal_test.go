@@ -14,6 +14,8 @@ import (
 	"testing"
 )
 
+// Тесты хэндлеров
+
 func TestServer_HandleUsersCreate(t *testing.T) {
 	s := newServer(teststore.New(), sessions.NewCookieStore([]byte("secret")))
 	testCases := []struct {

@@ -2,6 +2,7 @@ package model
 
 import "testing"
 
+// TestUser - создаем нового юзера и сразу его отдаем
 func TestUser(t *testing.T) *User {
 	return &User{
 		Login:      "anakonda3000",

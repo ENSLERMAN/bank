@@ -35,6 +35,7 @@ type server struct {
 	sessionStore sessions.Store
 }
 
+// newServer - создаем новый сервер из параметров
 func newServer(store store.Store, sessionStore sessions.Store) *server {
 	s := &server{
 		router:       mux.NewRouter(),
@@ -52,6 +53,7 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	s.router.ServeHTTP(w, r)
 }
 
+// configureRouter - здесь записываем нужные нам роуты
 func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
@@ -68,12 +70,14 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST")
 }
 
+// handleWhoami - обработчик для проверки юзера
 func (s *server) handleWhoami() http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		s.respond(w, r, http.StatusOK, r.Context().Value(ctxKeyUser).(*model.User))
 	}
 }
 
+// logRequest - middleware для логирования действий
 func (s *server) logRequest(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		logger := s.logger.WithFields(logrus.Fields{
@@ -95,6 +99,7 @@ func (s *server) logRequest(next http.Handler) http.Handler {
 	})
 }
 
+// setRequestID - middleware обработчик для создания каждому request уникального id
 func (s *server) setRequestID(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		id := uuid.New().String()
@@ -103,10 +108,12 @@ func (s *server) setRequestID(next http.Handler) http.Handler {
 	})
 }
 
+// error - банальный вывод ошибки
 func (s *server) error(w http.ResponseWriter, r *http.Request, code int, err error) {
 	s.respond(w, r, code, map[string]string{"error": err.Error()})
 }
 
+// respond - отдача ответа in json 
 func (s *server) respond(w http.ResponseWriter, r *http.Request, code int, data interface{}) {
 	w.WriteHeader(code)
 	if data != nil {

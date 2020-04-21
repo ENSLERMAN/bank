@@ -10,15 +10,19 @@ type UserRepository struct {
 	store *Store
 }
 
+// Create - метод для создания юзера
 func (r *UserRepository) Create(u *model.User) error {
+	// проверяем валидность данных
 	if err := u.Validate(); err != nil {
 		return err
 	}
 
+	// шифруем данные
 	if err := u.BeforeCreate(); err != nil {
 		return err
 	}
 
+	// создаем клиента и номер счета по умолчанию
 	b := &model.Bill{}
 	number := model.RandomizeCardNumber()
 
@@ -30,6 +34,13 @@ func (r *UserRepository) Create(u *model.User) error {
 		return err
 	}
 
+	/* типы счетов
+	1 - Default Bill
+	2 - MasterCard
+	3 - Visa
+	4 - Mir
+	*/
+	// по дефолту создается: "Default bill" с нулем на балансе
 	if err := r.store.db.QueryRowx(`INSERT INTO bank.bills 
 		(type_bill, number, balance)
 		VALUES ($1, $2, $3) RETURNING id`,
@@ -37,6 +48,7 @@ func (r *UserRepository) Create(u *model.User) error {
 	).Scan(&b.ID); err != nil {
 		return err
 	}
+
 
 	_, err := r.store.db.Exec(`INSERT INTO bank.clients_bills 
 		(bill_id, user_id)
@@ -49,6 +61,7 @@ func (r *UserRepository) Create(u *model.User) error {
 	return nil
 }
 
+// FindByLogin - метод поиска юзера по его логину
 func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	u := &model.User{}
 	if err := r.store.db.QueryRowx(
@@ -71,6 +84,7 @@ func (r *UserRepository) FindByLogin(login string) (*model.User, error) {
 	return u, nil
 }
 
+// FindByID - метод поиска юзера по его ID
 func (r *UserRepository) FindByID(id int) (*model.User, error) {
 	u := &model.User{}
 	if err := r.store.db.QueryRowx(

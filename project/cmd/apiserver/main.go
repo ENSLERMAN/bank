@@ -12,6 +12,7 @@ var (
 	configPath string
 )
 
+// в init путь до файла с конфигурацией
 func init() {
 	flag.StringVar(&configPath, "config-path", "configs/config.toml", "path to config file")
 }

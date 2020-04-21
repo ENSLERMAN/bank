@@ -6,6 +6,8 @@ import (
 	"testing"
 )
 
+// Тесты для модели юзера
+
 func TestUser_BeforeCreate(t *testing.T) {
 	u := model.TestUser(t)
 	assert.NoError(t, u.BeforeCreate())

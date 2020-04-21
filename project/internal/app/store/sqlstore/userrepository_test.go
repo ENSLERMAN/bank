@@ -8,6 +8,10 @@ import (
 	"testing"
 )
 
+ /*
+ ТЕСТЫ МЕТОДОВ ДЛЯ ЮЗЕРА
+  */
+
 func TestUserRepository_Create(t *testing.T) {
 	db, teardown := sqlstore.TestDB(t, databaseURL)
 	defer teardown("clients")
