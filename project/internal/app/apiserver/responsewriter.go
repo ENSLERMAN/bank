@@ -7,7 +7,7 @@ type responseWriter struct {
 	code int
 }
 
-// WriteHeader - здесь мы просто перезаписываем  responseWriter на отдачу статус кода
+// WriteHeader - здесь мы просто перезаписываем  responseWriter на отдачу статус кода.
 func (w *responseWriter) WriteHeader(statusCode int) {
 	w.code = statusCode
 	w.ResponseWriter.WriteHeader(statusCode)

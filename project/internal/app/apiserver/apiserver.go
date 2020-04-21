@@ -1,3 +1,4 @@
+// Пакет apiserser позволяет конфигурировать наш сервер и запускать его.
 package apiserver
 
 import (
@@ -9,7 +10,7 @@ import (
 	"net/http"
 )
 
-// Start запускаем сервер
+// Start запускаем сервер.
 func Start(config *Config) error {
 
 	db, err := newDB(config.DatabaseURL)

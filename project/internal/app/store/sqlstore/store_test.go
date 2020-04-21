@@ -9,7 +9,7 @@ var (
 	databaseURL string
 )
 
-// TestMain - тест хранилища без подключения к реальной бд
+// TestMain - тест хранилища без подключения к реальной бд.
 func TestMain(m *testing.M) {
 	databaseURL = os.Getenv("DATABASE_URL")
 	if databaseURL == "" {

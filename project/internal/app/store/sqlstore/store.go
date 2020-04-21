@@ -18,7 +18,7 @@ func New(db *sqlx.DB) *Store {
 	}
 }
 
-// User() - нужно для того шоб репозиторий юзера отдавался
+// User() - нужно для того шоб репозиторий юзера отдавался.
 func (s *Store) User() store.UserRepository {
 	if s.UserRepository != nil {
 		return s.UserRepository
@@ -29,7 +29,7 @@ func (s *Store) User() store.UserRepository {
 	return s.UserRepository
 }
 
-// Bill() - нужно для того шоб репозиторий юзера отдавался
+// Bill() - нужно для того шоб репозиторий юзера отдавался.
 func (s *Store) Bill() store.BillRepository {
 	if s.BillRepository != nil {
 		return s.BillRepository

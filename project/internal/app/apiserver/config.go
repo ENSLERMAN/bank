@@ -7,7 +7,7 @@ type Config struct {
 	SessionKey  string `toml:"session_key"`
 }
 
-// NewConfig Возвращаем конфиг
+// NewConfig Возвращаем конфиг.
 func NewConfig() *Config {
 	return &Config{
 		BindAddr: ":8080",

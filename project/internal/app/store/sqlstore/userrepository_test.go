@@ -9,7 +9,7 @@ import (
 )
 
  /*
- ТЕСТЫ МЕТОДОВ ДЛЯ ЮЗЕРА
+ ТЕСТЫ МЕТОДОВ ДЛЯ ЮЗЕРА.
   */
 
 func TestUserRepository_Create(t *testing.T) {

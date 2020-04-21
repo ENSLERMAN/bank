@@ -2,7 +2,7 @@ package store
 
 import "errors"
 
-// запись своих ошибок
+// запись своих ошибок.
 var (
 	ErrRecordNotFound   = errors.New("record not found")
 	NumberSenderAndDest = errors.New("departure and destination addresses cannot be the same")

@@ -14,7 +14,7 @@ import (
 	"testing"
 )
 
-// Тесты хэндлеров
+// Тесты хэндлеров.
 
 func TestServer_HandleUsersCreate(t *testing.T) {
 	s := newServer(teststore.New(), sessions.NewCookieStore([]byte("secret")))

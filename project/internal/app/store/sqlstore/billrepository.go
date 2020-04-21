@@ -8,11 +8,11 @@ import (
 )
 
 type BillRepository struct {
-	// отдаем ссылку на store
+	// отдаем ссылку на store.
 	store *Store
 }
 
-// CreateBill - метод создания счета
+// CreateBill - метод создания счета.
 func (r *BillRepository) CreateBill(u *model.Bill, id int) error {
 	// кидаем данные в бд
 	if err := r.store.db.QueryRowx(`INSERT INTO bank.bills 
@@ -30,7 +30,7 @@ func (r *BillRepository) CreateBill(u *model.Bill, id int) error {
 	return nil
 }
 
-// DeleteBill - метод закрытия счета ( удаления )
+// DeleteBill - метод закрытия счета ( удаления ).
 func (r *BillRepository) DeleteBill(id int) error {
 	_, err := r.store.db.Exec("DELETE FROM bank.clients_bills WHERE bill_id = $1", id)
 	if err != nil {
@@ -43,7 +43,7 @@ func (r *BillRepository) DeleteBill(id int) error {
 	return nil
 }
 
-// GetAllUserBills - метод для просмотра всех счетов юзера
+// GetAllUserBills - метод для просмотра всех счетов юзера.
 func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 
 	arr := make([]*model.Bill, 0)
@@ -78,7 +78,7 @@ func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 	return arr, nil
 }
 
-// FindByUser - метод для сопоставления номера счета и юзера, нужен для перевода денег
+// FindByUser - метод для сопоставления номера счета и юзера, нужен для перевода денег.
 func (r *BillRepository) FindByUser(userID, billID int) (*model.ClientBill, error) {
 	u := &model.ClientBill{}
 	if err := r.store.db.QueryRowx(
@@ -97,17 +97,17 @@ func (r *BillRepository) FindByUser(userID, billID int) (*model.ClientBill, erro
 	return u, nil
 }
 
-// TransferMoney - метод перевода денег
+// TransferMoney - метод перевода денег.
 func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) error {
 
 	u := &model.Bill{}
 	k := &model.Bill{}
 
-	req := &u.Balance // баланс отправителя
-	res := &k.Balance // баланс получателя
-	var NumberSender int // номер карты отправителя
+	req := &u.Balance // баланс отправителя.
+	res := &k.Balance // баланс получателя.
+	var NumberSender int // номер карты отправителя.
 
-	// получаем номер карты и баланс отправителя
+	// получаем номер карты и баланс отправителя.
 	if err := r.store.db.QueryRowx(`
 		SELECT balance::numeric::float8, number from bank.bills WHERE id = $1`, billID,
 	).Scan(
@@ -117,17 +117,17 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 		return err
 	}
 
-	// если номер карты отправителя и получателя совпадают ретёрним ошибку
+	// если номер карты отправителя и получателя совпадают ретёрним ошибку.
 	if NumberSender == NumberDest {
 		return store.NumberSenderAndDest
 	}
 
-	// если сумма перевода больше того, что лежит на карте, возвращаем ошибку
+	// если сумма перевода больше того, что лежит на карте, возвращаем ошибку.
 	if *req < float32(Amount) {
 		return store.GreaterAmount
 	}
 
-	// получаем баланс получателя
+	// получаем баланс получателя.
 	if err := r.store.db.QueryRowx(`
 		SELECT balance::numeric::float8 from bank.bills WHERE number = $1`, NumberDest,
 	).Scan(
@@ -136,7 +136,7 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 		return err
 	}
 
-	// обновляем данные у получателя и отправителя
+	// обновляем данные у получателя и отправителя.
 	_, err := r.store.db.Exec(`UPDATE bank.bills SET balance = $1 WHERE id = $2`,
 		*req-float32(Amount), billID)
 	if err != nil {
