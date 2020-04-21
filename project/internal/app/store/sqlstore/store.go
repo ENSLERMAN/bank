@@ -1,3 +1,4 @@
+// Пакет sqlstore содержит методы для работы моделей с реальной бд
 package sqlstore
 
 import (

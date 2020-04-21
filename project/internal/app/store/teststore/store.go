@@ -1,3 +1,4 @@
+// Пакет teststore создан для тестирования методов моделей
 package teststore
 
 import (
