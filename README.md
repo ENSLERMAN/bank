@@ -1,6 +1,7 @@
 # Гарипов Марсель гр. 171-333
 ## Ссылка на видео: https://drive.google.com/open?id=1Z0f3F9LcyoCOdG504-yJ09asU0qQ2K8r
 ## Ссылка на документацию: https://enslerman.github.io/
+## Ссылка на видео с тестами: https://drive.google.com/open?id=1OG5Jm3ks4eqCW0ErzJoC9A0HaCZawPo0
 ## Запуск проекта:
 1) У вас должен быть установлен Golang
     https://golang.org/
