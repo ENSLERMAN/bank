@@ -6,7 +6,6 @@ package main
 import (
 	"flag"
 	"log"
-
 	"github.com/BurntSushi/toml"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/apiserver"
 )
