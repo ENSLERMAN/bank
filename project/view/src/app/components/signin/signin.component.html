@@ -1,1 +1,23 @@
-<p>signin works!</p>
+<ng-container>
+  <form [formGroup]="loginForm" (ngSubmit)="login()"
+        class="d-flex justify-content-center align-items-center align-self-center flex-column h-75">
+    <h1>Войти в личный кабинет</h1>
+    <mat-form-field appearance="fill" class="mx-3 mt-3 w-50" [ngClass]="{mobile: isMobile}">
+      <mat-label>Имя пользователя</mat-label>
+      <input matInput formControlName="email" placeholder="lalka1337">
+    </mat-form-field>
+
+    <mat-form-field appearance="fill" class="mx-3 w-50" [ngClass]="{mobile: isMobile}">
+      <mat-label>Пароль</mat-label>
+      <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
+      </button>
+    </mat-form-field>
+    <button mat-raised-button color="accent" class="w-50 mb-3" type="submit">ВОЙТИ</button>
+    <div class="w-50 btn-group" [ngClass]="{mobile: isMobile}">
+      <button mat-stroked-button color="warn" (click)="rememberPassword()" class="mr-3 w-100">О БОЖЕ Я ЗАБЫЛ ПАРОЛЬ!</button>
+      <button mat-stroked-button color="basic" (click)="register()" class="w-100">ЗАРЕГИСТРИРОВАТЬСЯ</button>
+    </div>
+  </form>
+</ng-container>

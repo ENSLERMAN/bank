@@ -11,6 +11,14 @@ import { MainComponent } from './components/main/main.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatIconModule } from '@angular/material/icon';
+import { MatInputModule } from '@angular/material/input';
+
+import { AuthGuard } from "./guards/auth.guard";
+import {ReactiveFormsModule} from "@angular/forms";
+import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
+import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
 
 @NgModule({
   declarations: [
@@ -25,9 +33,19 @@ import { MatButtonModule } from '@angular/material/button';
     AppRoutingModule,
     BrowserAnimationsModule,
     MatSidenavModule,
-    MatButtonModule
+    MatButtonModule,
+    MatFormFieldModule,
+    MatIconModule,
+    MatInputModule,
+    ReactiveFormsModule,
+    HttpClientModule,
   ],
-  providers: [],
+  providers: [
+    AuthGuard,
+    [
+      { provide: HTTP_INTERCEPTORS, useClass: HttpRequestInterceptor, multi: true }
+    ],
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
