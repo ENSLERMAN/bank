@@ -187,17 +187,9 @@ func (s *server) handleBillDelete() http.HandlerFunc {
 
 // handleGetAllUserBills - обработчик, получаем все счета клиента.
 func (s *server) handleGetAllUserBills() http.HandlerFunc {
-	type request struct {
-		UserID string `json:"user_id"`
-	}
+
 
 	return func(w http.ResponseWriter, r *http.Request) {
-
-		req := &request{}
-		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-			s.error(w, r, http.StatusBadRequest, err)
-			return
-		}
 
 		session, err := s.sessionStore.Get(r, "bank-system")
 		if err != nil {

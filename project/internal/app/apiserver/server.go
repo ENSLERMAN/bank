@@ -58,22 +58,22 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
-	cock := handlers.AllowCredentials()
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"})
-	originsOk := handlers.AllowedOrigins([]string{"*"})
-	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization", "Origin", "X-Auth-Token"})
-	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST")
+	originsOk := handlers.AllowedOrigins([]string{"http://localhost:4200"})
+	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
+	cockSucker := handlers.AllowCredentials()
+	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST", "OPTIONS")
 	s.router.HandleFunc("/sessions", s.handleSessionsCreate()).Methods("POST", "OPTIONS")
 
-	s.router.Use(handlers.CORS(methodsOk, originsOk, headersOk, cock))
+	s.router.Use(handlers.CORS(methodsOk, originsOk, headersOk, cockSucker))
 
 	private := s.router.PathPrefix("/private").Subrouter()
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
-	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST")
-	private.HandleFunc("/get_bills", s.handleGetAllUserBills()).Methods("POST")
-	private.HandleFunc("/delete_bill", s.handleBillDelete()).Methods("POST")
-	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST")
+	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/get_bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/delete_bill", s.handleBillDelete()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST", "OPTIONS")
 }
 
 // handleWhoami - обработчик для проверки юзера.

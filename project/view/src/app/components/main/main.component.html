@@ -1,1 +1,50 @@
-<p>main works!</p>
+<div class="my-3">
+    <h2>{{this.Privet}}, {{this.UserInfo?.name}} {{this.UserInfo?.patronymic}}</h2>
+
+        <div class="row row-cols-1 row-cols-md-4">
+            <ng-container *ngFor="let item of Bills">
+                <div class="mb-3 col">
+                    <mat-card class="d-flex flex-column h-100">
+                        <h1>Баланс: {{item.money}} ₽</h1>
+                        <h1 class="mb-0 mr-1">**** **** **** {{item.number}}</h1>
+                        <div class="d-flex align-items-center">
+                            <h3 class="mr-auto mb-0">{{item.name}}</h3>
+                            <img [src]="item.img" alt="card image" class="cardImg">
+                        </div>
+                    </mat-card>
+                </div>
+            </ng-container>
+
+            <div class="col mb-3">
+                <mat-card class="h-100">
+                    перевод бабла
+                </mat-card>
+            </div>
+
+            <div class="col mb-3">
+                <mat-card class="h-100">
+                    открыть карту
+                </mat-card>
+            </div>
+
+            <div class="col mb-3">
+                <mat-card class="h-100">
+                    заказать выписку
+                </mat-card>
+            </div>
+
+            <div class="col mb-3">
+                <mat-card class="h-100">
+                    просмотр истории переводов
+                </mat-card>
+            </div>
+
+            <div class="col mb-3">
+                <mat-card class="h-100">
+                    еще какое-то говно
+                </mat-card>
+            </div>
+
+        </div>
+
+</div>

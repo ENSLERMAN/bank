@@ -7,8 +7,7 @@ import { HttpClient, HttpHeaders } from "@angular/common/http";
 export class HttpService {
 
   headers: HttpHeaders = new HttpHeaders({
-    'Content-Type': 'application/json',
-    'Access-Control-Allow-Origin': '*'
+    'Content-Type': 'application/json'
   });
   options = {
     headers: this.headers,
@@ -21,11 +20,15 @@ export class HttpService {
   constructor(private http: HttpClient) { }
 
   authUser(data) {
-    return this.http.post(`${this.baseURL}/session`, data, this.options).toPromise()
+    return this.http.post(`${this.baseURL}/sessions`, data, this.options).toPromise();
   }
 
   getUserInfo() {
     return this.http.get(`${this.baseURL}/private/whoami`).toPromise()
+  }
+
+  getUserBills() {
+    return this.http.get(`${this.baseURL}/private/get_bills`, this.options).toPromise();
   }
 
 }

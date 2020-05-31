@@ -1,13 +1,7 @@
-<mat-drawer-container class="sidenav-container" autosize>
-  <mat-drawer #drawer class="sidenav-menu" mode="side">
-    <p>Auto-resizing sidenav</p>
-  </mat-drawer>
-
-  <div class="sidenav-content m-3">
-    <button type="button" mat-button (click)="drawer.toggle()">
-      <span class="material-icons" style="font-size: 3rem">menu</span>
-    </button>
+<div class="m-3">
+    <mat-toolbar color="primary" class="d-flex justify-content-between">
+        MARS Bank
+        <button mat-flat-button color="accent" [style.display]="visibility==true?'block':'none'" (click)="logout()">Выйти</button>
+    </mat-toolbar>
     <router-outlet></router-outlet>
-  </div>
-
-</mat-drawer-container>
+</div>

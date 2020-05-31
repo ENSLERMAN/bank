@@ -14,6 +14,9 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { MatCardModule } from '@angular/material/card';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {ReactiveFormsModule} from "@angular/forms";
@@ -39,6 +42,9 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
     MatInputModule,
     ReactiveFormsModule,
     HttpClientModule,
+    MatToolbarModule,
+    MatGridListModule,
+    MatCardModule,
   ],
   providers: [
     AuthGuard,
