@@ -1,0 +1,15 @@
+<h1 mat-dialog-title>Открыть новый счёт</h1>
+<div mat-dialog-content>
+    <mat-form-field color="accent" style="width: 100%">
+        <mat-label>Какой тип счёта вы хотите завести?</mat-label>
+        <mat-select [(ngModel)]="data.TypeBill">
+            <mat-option value="2">Mastercard</mat-option>
+            <mat-option value="3">Visa</mat-option>
+            <mat-option value="4">Мир</mat-option>
+        </mat-select>
+    </mat-form-field>
+</div>
+<div mat-dialog-actions>
+    <button mat-flat-button [ngClass]="{mobile: isMobile}" color="warn" (click)="onNoClick()">Нет, я хочу к мамочке</button>
+    <button mat-flat-button [ngClass]="{mobile: isMobile}" color="accent" [mat-dialog-close]="data.TypeBill" cdkFocusInitial>Дайте две!</button>
+</div>

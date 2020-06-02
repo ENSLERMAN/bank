@@ -3,12 +3,12 @@
   <form [formGroup]="loginForm" (ngSubmit)="login()"
         class="d-flex justify-content-center align-items-center align-self-center flex-column h-75">
     <h1>Войти в личный кабинет</h1>
-    <mat-form-field appearance="fill" class="mx-3 mt-3 w-50" [ngClass]="{mobile: isMobile}">
+    <mat-form-field appearance="fill" color="accent" class="mx-3 mt-3 w-50" [ngClass]="{mobile: isMobile}">
       <mat-label>Имя пользователя</mat-label>
       <input matInput formControlName="email" placeholder="lalka1337">
     </mat-form-field>
 
-    <mat-form-field appearance="fill" class="mx-3 w-50" [ngClass]="{mobile: isMobile}">
+    <mat-form-field appearance="fill" color="accent" class="mx-3 w-50" [ngClass]="{mobile: isMobile}">
       <mat-label>Пароль</mat-label>
       <input matInput [type]="hide ? 'password' : 'text'" formControlName="password">
       <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hide">

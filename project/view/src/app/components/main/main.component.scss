@@ -16,6 +16,15 @@
 .mat-card:hover {
   transform: translate(0, -10px);
   cursor: pointer;
+  background: #494949;
 }
 
+.icons {
+  width: 75px;
+  height: auto;
+  object-fit: contain;
+}
 
+div.col {
+  outline: none !important;
+}

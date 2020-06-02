@@ -31,4 +31,8 @@ export class HttpService {
     return this.http.get(`${this.baseURL}/private/get_bills`, this.options).toPromise();
   }
 
+  createBill(data) {
+    return this.http.post(`${this.baseURL}/private/create_bill`, data, this.options).toPromise();
+  }
+
 }

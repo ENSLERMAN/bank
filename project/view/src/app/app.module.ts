@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { SigninComponent } from './components/signin/signin.component';
 import { SignupComponent } from './components/signup/signup.component';
 import { ProfileComponent } from './components/profile/profile.component';
-import { MainComponent } from './components/main/main.component';
+import { DialogWindow, MainComponent } from './components/main/main.component';
 
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatButtonModule } from '@angular/material/button';
@@ -17,9 +17,11 @@ import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatSelectModule } from '@angular/material/select';
 
 import { AuthGuard } from "./guards/auth.guard";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
 
@@ -29,7 +31,8 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
     SigninComponent,
     SignupComponent,
     ProfileComponent,
-    MainComponent
+    MainComponent,
+    DialogWindow
   ],
   imports: [
     BrowserModule,
@@ -45,6 +48,9 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
     MatToolbarModule,
     MatGridListModule,
     MatCardModule,
+    MatDialogModule,
+    MatSelectModule,
+    FormsModule,
   ],
   providers: [
     AuthGuard,
