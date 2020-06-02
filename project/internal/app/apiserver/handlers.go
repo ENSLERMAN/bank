@@ -207,6 +207,42 @@ func (s *server) handleGetAllUserBills() http.HandlerFunc {
 	}
 }
 
+func (s *server) handleGetAllUserPayments() http.HandlerFunc {
+
+	type request struct {
+		Number     int  `json:"number"`
+	}
+
+	return func(w http.ResponseWriter, r *http.Request) {
+		req := &request{}
+
+		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
+			s.error(w, r, http.StatusBadRequest, err)
+			return
+		}
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.Bill().FindByBill(userID, req.Number)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		u, err := s.store.Bill().GetAllUserPayments(req.Number)
+		if err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, u)
+	}
+}
+
 // handleSendMoney - обработчик перевода денег.
 func (s *server) handleSendMoney() http.HandlerFunc {
 

@@ -74,6 +74,7 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/get_bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/delete_bill", s.handleBillDelete()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/get_payments", s.handleGetAllUserPayments()).Methods("GET", "OPTIONS")
 }
 
 // handleWhoami - обработчик для проверки юзера.

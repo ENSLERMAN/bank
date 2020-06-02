@@ -78,12 +78,76 @@ func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 	return arr, nil
 }
 
+func (r *BillRepository) GetAllUserPayments(number int) ([]*model.Payment, error) {
+
+	arr := make([]*model.Payment, 0)
+
+	rows, err := r.store.db.Queryx(`
+		SELECT id, sender, recipient, amount::numeric::float8 FROM bank.payments
+		WHERE (sender = $1) OR (recipient = $1)`, number)
+	if err != nil {
+		logrus.Error(err)
+	}
+	for rows.Next() {
+		u := new(model.Payment)
+		err := rows.Scan(
+			&u.ID,
+			&u.Sender,
+			&u.Recipient,
+			&u.Amount,
+		)
+		if err != nil {
+			return nil, err
+		}
+		arr = append(arr, u)
+	}
+	err = rows.Err()
+	if err != nil {
+		logrus.Error(err)
+	}
+	return arr, nil
+}
+
 // FindByUser - метод для сопоставления номера счета и юзера, нужен для перевода денег.
 func (r *BillRepository) FindByUser(userID, billID int) (*model.ClientBill, error) {
 	u := &model.ClientBill{}
 	if err := r.store.db.QueryRowx(
 		`SELECT id, user_id, bill_id FROM bank.clients_bills WHERE user_id = $1 and bill_id = $2`,
 		userID, billID,
+	).Scan(
+		&u.ID,
+		&u.UserID,
+		&u.BillID,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+		return nil, err
+	}
+	return u, nil
+}
+
+func (r *BillRepository) FindByBill(userID, number int) (*model.ClientBill, error) {
+	u := &model.ClientBill{}
+	var idBill int
+	var numberBill int
+
+	if err := r.store.db.QueryRowx(
+		`SELECT id, number FROM bank.bills WHERE number = $1`,
+		number,
+	).Scan(
+		&idBill,
+		&numberBill,
+	); err != nil {
+		if err == sql.ErrNoRows {
+			return nil, store.ErrRecordNotFound
+		}
+		return nil, err
+	}
+
+	if err := r.store.db.QueryRowx(
+		`SELECT id, user_id, bill_id FROM bank.clients_bills WHERE user_id = $1 and bill_id = $2`,
+		userID, &idBill,
 	).Scan(
 		&u.ID,
 		&u.UserID,
@@ -145,6 +209,13 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 
 	_, err = r.store.db.Exec(`UPDATE bank.bills SET balance = $1 WHERE number = $2`,
 		*res+float32(Amount), NumberDest)
+	if err != nil {
+		return err
+	}
+
+
+	_, err = r.store.db.Exec(`INSERT INTO bank.payments 
+		(sender, recipient, amount) VALUES ($1, $2, $3)`, NumberSender, NumberDest, Amount)
 	if err != nil {
 		return err
 	}

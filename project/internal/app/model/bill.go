@@ -15,6 +15,13 @@ type Bill struct {
 	Balance float32 `json:"money"`
 }
 
+type Payment struct {
+	ID int `json:"id"`
+	Sender int `json:"sender"`
+	Recipient int `json:"recipient"`
+	Amount float32 `json:"amount"`
+}
+
 // ClientBill - структура таблицы в бд client_bills.
 type ClientBill struct {
 	ID     int `json:"id"`
