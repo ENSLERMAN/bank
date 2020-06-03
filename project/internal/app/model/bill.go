@@ -20,6 +20,8 @@ type Payment struct {
 	Sender int `json:"sender"`
 	Recipient int `json:"recipient"`
 	Amount float32 `json:"amount"`
+	Time string `json:"time"`
+	Date string `json:"date"`
 }
 
 // ClientBill - структура таблицы в бд client_bills.

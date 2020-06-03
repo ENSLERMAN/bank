@@ -19,11 +19,13 @@ import { MatGridListModule } from '@angular/material/grid-list';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
+import { MatTableModule } from '@angular/material/table';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
+import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 
 @NgModule({
   declarations: [
@@ -32,7 +34,8 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
     SignupComponent,
     ProfileComponent,
     MainComponent,
-    DialogWindow
+    DialogWindow,
+    PaymentHistoryComponent
   ],
   imports: [
     BrowserModule,
@@ -51,6 +54,7 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
     MatDialogModule,
     MatSelectModule,
     FormsModule,
+    MatTableModule,
   ],
   providers: [
     AuthGuard,

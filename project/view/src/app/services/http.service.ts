@@ -35,4 +35,8 @@ export class HttpService {
     return this.http.post(`${this.baseURL}/private/create_bill`, data, this.options).toPromise();
   }
 
+  getUserPayments() {
+    return this.http.get(`${this.baseURL}/private/get_payments`, this.options).toPromise();
+  }
+
 }

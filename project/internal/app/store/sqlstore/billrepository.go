@@ -78,33 +78,48 @@ func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 	return arr, nil
 }
 
-func (r *BillRepository) GetAllUserPayments(number int) ([]*model.Payment, error) {
+func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 
 	arr := make([]*model.Payment, 0)
 
-	rows, err := r.store.db.Queryx(`
-		SELECT id, sender, recipient, amount::numeric::float8 FROM bank.payments
+	Bills, err := r.GetAllUserBills(id)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range Bills {
+		number := Bills[i].Number
+
+		rows, err := r.store.db.Queryx(`
+		SELECT id, sender, recipient, amount::numeric::float8, 
+		to_char(time AT TIME ZONE 'Europe/Moscow', 'HH24:MI:SS'),
+		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY')
+		FROM bank.payments
 		WHERE (sender = $1) OR (recipient = $1)`, number)
-	if err != nil {
-		logrus.Error(err)
-	}
-	for rows.Next() {
-		u := new(model.Payment)
-		err := rows.Scan(
-			&u.ID,
-			&u.Sender,
-			&u.Recipient,
-			&u.Amount,
-		)
 		if err != nil {
-			return nil, err
+			logrus.Error(err)
 		}
-		arr = append(arr, u)
+		for rows.Next() {
+			u := new(model.Payment)
+			err := rows.Scan(
+				&u.ID,
+				&u.Sender,
+				&u.Recipient,
+				&u.Amount,
+				&u.Time,
+				&u.Date,
+			)
+			if err != nil {
+				return nil, err
+			}
+			arr = append(arr, u)
+		}
+		err = rows.Err()
+		if err != nil {
+			logrus.Error(err)
+		}
 	}
-	err = rows.Err()
-	if err != nil {
-		logrus.Error(err)
-	}
+
 	return arr, nil
 }
 
@@ -215,7 +230,7 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 
 
 	_, err = r.store.db.Exec(`INSERT INTO bank.payments 
-		(sender, recipient, amount) VALUES ($1, $2, $3)`, NumberSender, NumberDest, Amount)
+		(sender, recipient, amount, time) VALUES ($1, $2, $3, 'now')`, NumberSender, NumberDest, Amount)
 	if err != nil {
 		return err
 	}

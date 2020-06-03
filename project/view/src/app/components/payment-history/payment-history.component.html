@@ -1,0 +1,26 @@
+<ng-container>
+    <div class="table-responsive mt-3">
+        <table class="table table-hover table-dark text-center">
+            <thead>
+                <tr>
+                    <th scope="col">Дата</th>
+                    <th scope="col">Время</th>
+                    <th scope="col">Счет отправления</th>
+                    <th scope="col">Счет зачисления</th>
+                    <th scope="col">Сумма</th>
+                    <th scope="col">Тип перевода</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let item of this.payments">
+                    <th class="align-middle" scope="row">{{item.date}}</th>
+                    <td class="align-middle">{{item.time}}</td>
+                    <td class="align-middle">**** **** **** {{item.sender}}</td>
+                    <td class="align-middle">**** **** **** {{item.recipient}}</td>
+                    <td class="align-middle">{{item.amount}}</td>
+                    <td class="align-middle"><img [src]="item.type" alt="image" class="img-type"></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</ng-container>

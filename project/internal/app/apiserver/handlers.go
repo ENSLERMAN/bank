@@ -209,17 +209,7 @@ func (s *server) handleGetAllUserBills() http.HandlerFunc {
 
 func (s *server) handleGetAllUserPayments() http.HandlerFunc {
 
-	type request struct {
-		Number     int  `json:"number"`
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
-		req := &request{}
-
-		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-			s.error(w, r, http.StatusBadRequest, err)
-			return
-		}
 
 		session, err := s.sessionStore.Get(r, "bank-system")
 		if err != nil {
@@ -227,13 +217,13 @@ func (s *server) handleGetAllUserPayments() http.HandlerFunc {
 		}
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
 
-		_, err = s.store.Bill().FindByBill(userID, req.Number)
+		_, err = s.store.User().FindByID(userID)
 		if err != nil {
 			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
 			return
 		}
 
-		u, err := s.store.Bill().GetAllUserPayments(req.Number)
+		u, err := s.store.Bill().GetAllUserPayments(userID)
 		if err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
