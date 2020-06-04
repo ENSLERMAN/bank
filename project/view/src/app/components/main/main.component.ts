@@ -60,21 +60,21 @@ export class MainComponent implements OnInit {
     // @ts-ignore
     for (let item of this.Bills) {
       item.number = item.number % 10000
-      switch (item.name) {
-        case "Default bill": {
+      switch (item.type) {
+        case 1: {
           item.img = "assets/icons/card.png";
           item.name = "Лицевой счет"
           break
         }
-        case "Mastercard": {
+        case 2: {
           item.img = "assets/icons/mastercard.png"
           break
         }
-        case "Visa": {
+        case 3: {
           item.img = "assets/icons/visa.png"
           break
         }
-        case "Mir": {
+        case 4: {
           item.img = "assets/icons/mir.png"
           break
         }

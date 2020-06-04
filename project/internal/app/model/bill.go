@@ -10,9 +10,9 @@ import (
 type Bill struct {
 	ID      int     `json:"id"`
 	Type    int     `json:"type"`
-	Name    string  `json:"name"`
 	Number  int     `json:"number"`
 	Balance float32 `json:"money"`
+	UserID int `json:"user_id"`
 }
 
 type Payment struct {
@@ -22,13 +22,6 @@ type Payment struct {
 	Amount float32 `json:"amount"`
 	Time string `json:"time"`
 	Date string `json:"date"`
-}
-
-// ClientBill - структура таблицы в бд client_bills.
-type ClientBill struct {
-	ID     int `json:"id"`
-	UserID int `json:"user_id"`
-	BillID int `json:"bill_id"`
 }
 
 // RandomizeCardNumber - рандомим номер карты для создания счета.
