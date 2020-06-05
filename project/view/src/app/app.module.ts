@@ -20,12 +20,15 @@ import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
+import { SendMoneyComponent } from './components/send-money/send-money.component';
 
 @NgModule({
   declarations: [
@@ -35,7 +38,8 @@ import { PaymentHistoryComponent } from './components/payment-history/payment-hi
     ProfileComponent,
     MainComponent,
     DialogWindow,
-    PaymentHistoryComponent
+    PaymentHistoryComponent,
+    SendMoneyComponent
   ],
   imports: [
     BrowserModule,
@@ -53,8 +57,10 @@ import { PaymentHistoryComponent } from './components/payment-history/payment-hi
     MatCardModule,
     MatDialogModule,
     MatSelectModule,
+    MatProgressSpinnerModule,
     FormsModule,
     MatTableModule,
+    MatExpansionModule,
   ],
   providers: [
     AuthGuard,

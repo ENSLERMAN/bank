@@ -3,5 +3,17 @@
         <span routerLink="main">MARS BANK</span>
         <button mat-flat-button color="accent" [style.display]="visibility==true?'block':'none'" (click)="logout()">Выйти</button>
     </mat-toolbar>
-    <router-outlet></router-outlet>
+    <div>
+        <div [style.display]="visibility==true?'block':'none'">
+            <div class="d-flex justify-content-between align-items-center align-self-center mt-3" style="height: 36px">
+                <div class="privet">{{this.Text}}</div>
+                <div [style.display]="visibilityBack==true?'block':'none'">
+                    <button mat-flat-button color="warn" routerLink="main">Назад</button>
+                </div>
+            </div>
+        </div>
+        <div class="my-3">
+            <router-outlet></router-outlet>
+        </div>
+    </div>
 </div>

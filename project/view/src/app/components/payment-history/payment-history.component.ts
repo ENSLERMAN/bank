@@ -13,42 +13,37 @@ export class PaymentHistoryComponent implements OnInit {
   ) { }
 
   payments: any = [{}];
-  Bills: any = [{}];
+  visibility: boolean = true;
 
   ngOnInit() {
     this.getPayments().then(() => {
       console.log(this.payments)
+    }).finally(() => {
+      this.visibility = false;
     })
   }
 
   async getPayments() {
     this.payments = await this.http.getUserPayments()
-    await this.http.getUserBills().then((res) => {
-      this.Bills = res["body"]
-      console.log(this.Bills)
-    });
     this.payments = this.payments["body"]
+
     for (let item of this.payments) {
-      for (let i of this.Bills) {
-        if (item.sender === i.number && item.recipient !== i.number) {
-          item.type = "assets/icons/down.png"
-        } else if (item.sender !== i.number && item.recipient === i.number) {
-          item.type = "assets/icons/up.png"
-        } else if (item.sender === i.number && item.recipient === i.number) {
-          item.type = "assets/icons/exchange.png"
-        }
+      if (item.type === 1) {
+        item.img = "assets/icons/down.png"
+        item.text = "Списание"
+      } else if (item.type === 2) {
+        item.img = "assets/icons/up.png"
+        item.text = "Пополнение"
+      } else if (item.type === 3) {
+        item.img = "assets/icons/exchange.png"
+        item.text = "Перевод между счетами"
       }
       item.recipient = item.recipient % 10000
       item.sender = item.sender % 10000
     }
-    for (let i = 0; i < this.payments.length - 1; i++) {
-      for (let j = 1; j < this.payments.length; j++) {
-        if (this.payments[i].id === this.payments[j].id) {
-          this.payments.splice(i, 1)
-        }
-      }
-    }
 
   }
+
+
 
 }

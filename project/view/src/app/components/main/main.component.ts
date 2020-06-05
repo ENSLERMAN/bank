@@ -26,36 +26,23 @@ export class MainComponent implements OnInit {
     patronymic: string,
     surname: string,
   };
-  Hour: any;
-  Privet: string;
   cols: number = 3;
   Bills: object;
 
   TypeBill: number;
+  visibility: boolean = true;
 
   async ngOnInit() {
-    this.Hour = new Date().getHours();
     // @ts-ignore
     this.UserInfo = await this.http.getUserInfo();
     await this.getUserBills(this.UserInfo.id)
-    console.log(this.Bills)
-
-    if (this.Hour >= 3 && this.Hour < 12) {
-      this.Privet = "Доброе утро";
-    } else if (this.Hour >= 12 && this.Hour < 18) {
-      this.Privet = "Добрый день";
-    } else if (this.Hour >= 18 && this.Hour < 24) {
-      this.Privet = "Добрый вечер";
-    } else if (this.Hour >= 0 && this.Hour < 3) {
-      this.Privet = "Доброй ночи";
-    }
-      console.log(this.UserInfo)
-    console.log(this.Hour)
   }
 
   async getUserBills(id: number) {
     await this.http.getUserBills().then((res) => {
       this.Bills = res["body"]
+    }).finally(() => {
+      this.visibility = false;
     });
     // @ts-ignore
     for (let item of this.Bills) {
@@ -68,14 +55,17 @@ export class MainComponent implements OnInit {
         }
         case 2: {
           item.img = "assets/icons/mastercard.png"
+          item.name = "Mastercard"
           break
         }
         case 3: {
           item.img = "assets/icons/visa.png"
+          item.name = "Visa"
           break
         }
         case 4: {
           item.img = "assets/icons/mir.png"
+          item.name = "МИР"
           break
         }
       }

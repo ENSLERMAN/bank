@@ -1,26 +1,29 @@
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
 <ng-container>
-    <div class="table-responsive mt-3">
-        <table class="table table-hover table-dark text-center">
-            <thead>
-                <tr>
-                    <th scope="col">Дата</th>
-                    <th scope="col">Время</th>
-                    <th scope="col">Счет отправления</th>
-                    <th scope="col">Счет зачисления</th>
-                    <th scope="col">Сумма</th>
-                    <th scope="col">Тип перевода</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr *ngFor="let item of this.payments">
-                    <th class="align-middle" scope="row">{{item.date}}</th>
-                    <td class="align-middle">{{item.time}}</td>
-                    <td class="align-middle">**** **** **** {{item.sender}}</td>
-                    <td class="align-middle">**** **** **** {{item.recipient}}</td>
-                    <td class="align-middle">{{item.amount}}</td>
-                    <td class="align-middle"><img [src]="item.type" alt="image" class="img-type"></td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+    <mat-accordion [style.display]="visibility==false?'block':'none'" class="my-3">
+        <mat-expansion-panel *ngFor="let item of this.payments">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="d-flex w-100 justify-content-between align-items-center align-self-center">
+                        <div class="d-flex w-auto align-items-center align-self-center">
+                            <div>
+                                <img [src]="item.img" alt="image" class="img-type mr-2">
+                            </div>
+                            <div>{{item.text}}</div>
+                        </div>
+                        <div>{{item.amount}} ₽</div>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="d-flex flex-column">
+                <div><h4>Дата: {{item.date}}</h4></div>
+                <div><h4>Время: {{item.time}}</h4></div>
+                <div><h4>Отправитель: **** **** **** {{item.sender}}</h4></div>
+                <div><h4>Получатель: **** **** **** {{item.recipient}}</h4></div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
 </ng-container>

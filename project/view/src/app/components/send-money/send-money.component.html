@@ -1,0 +1,41 @@
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
+
+<div [style.display]="visibility==false?'block':'none'">
+
+    <ng-container>
+        <form [formGroup]="sendMoney" (ngSubmit)="send()">
+            <div class="d-flex flex-column w-50" [ngClass]="{mobile: isMobile}">
+                <mat-form-field class="w-100" appearance="fill" color="accent">
+                    <mat-label>С какого счёта произвести перевод?</mat-label>
+                    <mat-select formControlName="billID">
+                        <mat-option *ngFor="let item of this.Bills" [value]="item.id">
+                            <img [src]="item.img" alt="card image" class="cardImg">
+                            ** {{item.number}} - Баланс {{item.money}} ₽
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field class="w-100" appearance="fill" color="accent">
+                    <mat-label>Номер счёта получателя</mat-label>
+                    <input formControlName="number" matInput placeholder="0000000000000000">
+                    <button mat-button *ngIf="sendMoney.controls['number'].value"
+                            matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['number'].reset()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+                <mat-form-field class="w-100" appearance="fill" color="accent">
+                    <mat-label>Сумма к отправке</mat-label>
+                    <input formControlName="amount" matInput placeholder="0">
+                    <mat-icon matPrefix>₽</mat-icon>
+                    <button mat-button *ngIf="sendMoney.controls['amount'].value"
+                            matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['amount'].reset()">
+                        <mat-icon>close</mat-icon>
+                    </button>
+                </mat-form-field>
+                <button [disabled]="sendMoney.invalid" mat-flat-button color="accent" type="submit">ОТПРАВИТЬ</button>
+            </div>
+        </form>
+    </ng-container>
+
+</div>

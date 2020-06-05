@@ -1,7 +1,9 @@
-<div class="my-3">
-    <h2>{{this.Privet}}, {{this.UserInfo?.name}} {{this.UserInfo?.patronymic}}</h2>
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
 
-        <div class="row row-cols-1 row-cols-md-4">
+<div [style.display]="visibility==false?'block':'none'">
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2">
             <ng-container *ngFor="let item of Bills">
                 <div class="mb-3 col">
                     <mat-card class="d-flex flex-column h-100">
@@ -15,7 +17,7 @@
                 </div>
             </ng-container>
 
-            <div class="col mb-3">
+            <div class="col mb-3" routerLink="/send_money">
                 <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
                     <img src="assets/icons/SendMoney.png" alt="" class="icons">
                     <h3>Перевести деньги</h3>

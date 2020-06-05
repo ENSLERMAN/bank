@@ -5,6 +5,7 @@ import {MainComponent} from "./components/main/main.component";
 import {SignupComponent} from "./components/signup/signup.component";
 import {AuthGuard} from "./guards/auth.guard";
 import {PaymentHistoryComponent} from "./components/payment-history/payment-history.component";
+import {SendMoneyComponent} from "./components/send-money/send-money.component";
 
 
 const routes: Routes = [
@@ -12,6 +13,7 @@ const routes: Routes = [
   { path: "register", component: SignupComponent },
   { path: "main", component: MainComponent, canActivate: [AuthGuard]},
   { path: "history", component: PaymentHistoryComponent, canActivate: [AuthGuard]},
+  { path: "send_money", component: SendMoneyComponent, canActivate: [AuthGuard]},
   { path: "", redirectTo: "main", pathMatch: "full"},
   { path: "**", redirectTo: "" }
 ];
