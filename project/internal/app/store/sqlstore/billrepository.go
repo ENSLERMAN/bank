@@ -5,6 +5,7 @@ import (
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/store"
 	"github.com/sirupsen/logrus"
+	"log"
 )
 
 type BillRepository struct {
@@ -93,8 +94,15 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 		if err != nil {
 			return nil, err
 		}
+		//fmt.Printf("sender: %d = %t , rec: %d = %t\n", u.Sender, r.FindByBill(id, u.Sender), u.Recipient, r.FindByBill(id, u.Recipient))
 		if r.FindByBill(id, u.Sender) == false && r.FindByBill(id, u.Recipient) == false {
 			continue
+		} else if r.FindByBill(id, u.Sender) == true && r.FindByBill(id, u.Recipient) == false {
+			u.Type = 1
+		} else if r.FindByBill(id, u.Sender) == false && r.FindByBill(id, u.Recipient) == true {
+			u.Type = 2
+		} else if r.FindByBill(id, u.Sender) == true && r.FindByBill(id, u.Recipient) == true {
+			u.Type = 3
 		}
 
 		arr = append(arr, u)
@@ -107,7 +115,7 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 func (r *BillRepository) FindByUser(userID, billID int) bool {
 
 	_, err := r.store.db.Exec(`
-		SELECT id, user_id FROM bank.bills WHERE (id = $1, user_id = $2)`, billID, userID)
+		SELECT id, user_id FROM bank.bills WHERE id = $1 and user_id = $2`, billID, userID)
 	if err != nil || err == sql.ErrNoRows {
 		return false
 	}
@@ -117,13 +125,28 @@ func (r *BillRepository) FindByUser(userID, billID int) bool {
 
 func (r *BillRepository) FindByBill(userID, number int) bool {
 
-	_, err := r.store.db.Exec(`
-		SELECT id, number, user_id FROM bank.bills WHERE (number = $1, user_id = $2)`, number, userID)
-	if err != nil || err == sql.ErrNoRows {
+	var nuSho bool
+
+	rows, err := r.store.db.Queryx(`
+		SELECT exists(select * FROM bank.bills WHERE (number = $1 and user_id = $2))`, number, userID)
+	if err != nil {
+		return false
+	}
+	defer rows.Close()
+	for rows.Next() {
+		err := rows.Scan(&nuSho)
+		if err != nil {
+			log.Fatal(err)
+			return false
+		}
+	}
+	err = rows.Err()
+	if err != nil {
+		log.Fatal(err)
 		return false
 	}
 
-	return true
+	return nuSho
 }
 
 // TransferMoney - метод перевода денег.

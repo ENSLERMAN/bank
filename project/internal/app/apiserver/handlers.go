@@ -249,17 +249,17 @@ func (s *server) handleSendMoney() http.HandlerFunc {
 			return
 		}
 
-		// получаем ид юзера из сессии.
-		//session, err := s.sessionStore.Get(r, "bank-system")
-		//if err != nil {
-		//	s.error(w, r, http.StatusInternalServerError, err)
-		//}
-		//userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+		//получаем ид юзера из сессии.
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
 
-		//if s.store.Bill().FindByUser(userID, req.BillID) == false {
-		//	s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
-		//	return
-		//}
+		if s.store.Bill().FindByUser(userID, req.BillID) == false {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
 
 		if err := s.store.Bill().TransferMoney(req.NumberDest, req.Amount, req.BillID); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
