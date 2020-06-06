@@ -39,4 +39,6 @@ export class HttpService {
     return this.http.get(`${this.baseURL}/private/get_payments`, this.options).toPromise();
   }
 
+  
+
 }

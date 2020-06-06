@@ -1,0 +1,375 @@
+--
+-- PostgreSQL database dump
+--
+
+-- Dumped from database version 12.2 (Ubuntu 12.2-2.pgdg16.04+1)
+-- Dumped by pg_dump version 12.3
+
+SET statement_timeout = 0;
+SET lock_timeout = 0;
+SET idle_in_transaction_session_timeout = 0;
+SET client_encoding = 'UTF8';
+SET standard_conforming_strings = on;
+SELECT pg_catalog.set_config('search_path', '', false);
+SET check_function_bodies = false;
+SET xmloption = content;
+SET client_min_messages = warning;
+SET row_security = off;
+
+--
+-- Name: bank; Type: SCHEMA; Schema: -; Owner: ensler
+--
+
+CREATE SCHEMA bank;
+
+
+ALTER SCHEMA bank OWNER TO ensler;
+
+SET default_tablespace = '';
+
+SET default_table_access_method = heap;
+
+--
+-- Name: bills; Type: TABLE; Schema: bank; Owner: ensler
+--
+
+CREATE TABLE bank.bills (
+    id integer NOT NULL,
+    type_bill integer NOT NULL,
+    number bigint NOT NULL,
+    balance money DEFAULT 0 NOT NULL,
+    user_id integer NOT NULL
+);
+
+
+ALTER TABLE bank.bills OWNER TO ensler;
+
+--
+-- Name: bills_id_seq; Type: SEQUENCE; Schema: bank; Owner: ensler
+--
+
+CREATE SEQUENCE bank.bills_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bank.bills_id_seq OWNER TO ensler;
+
+--
+-- Name: bills_id_seq; Type: SEQUENCE OWNED BY; Schema: bank; Owner: ensler
+--
+
+ALTER SEQUENCE bank.bills_id_seq OWNED BY bank.bills.id;
+
+
+--
+-- Name: clients; Type: TABLE; Schema: bank; Owner: ensler
+--
+
+CREATE TABLE bank.clients (
+    id integer NOT NULL,
+    surname character varying NOT NULL,
+    name character varying NOT NULL,
+    patronymic character varying NOT NULL,
+    login character varying NOT NULL,
+    password character varying NOT NULL,
+    passport character varying NOT NULL
+);
+
+
+ALTER TABLE bank.clients OWNER TO ensler;
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE; Schema: bank; Owner: ensler
+--
+
+CREATE SEQUENCE bank.clients_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bank.clients_id_seq OWNER TO ensler;
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE OWNED BY; Schema: bank; Owner: ensler
+--
+
+ALTER SEQUENCE bank.clients_id_seq OWNED BY bank.clients.id;
+
+
+--
+-- Name: payments; Type: TABLE; Schema: bank; Owner: ensler
+--
+
+CREATE TABLE bank.payments (
+    id integer NOT NULL,
+    sender bigint NOT NULL,
+    recipient bigint NOT NULL,
+    amount money NOT NULL,
+    "time" timestamp with time zone NOT NULL
+);
+
+
+ALTER TABLE bank.payments OWNER TO ensler;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE; Schema: bank; Owner: ensler
+--
+
+CREATE SEQUENCE bank.payments_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bank.payments_id_seq OWNER TO ensler;
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE OWNED BY; Schema: bank; Owner: ensler
+--
+
+ALTER SEQUENCE bank.payments_id_seq OWNED BY bank.payments.id;
+
+
+--
+-- Name: type_bill; Type: TABLE; Schema: bank; Owner: ensler
+--
+
+CREATE TABLE bank.type_bill (
+    id integer NOT NULL,
+    name character varying NOT NULL
+);
+
+
+ALTER TABLE bank.type_bill OWNER TO ensler;
+
+--
+-- Name: type_bill_id_seq; Type: SEQUENCE; Schema: bank; Owner: ensler
+--
+
+CREATE SEQUENCE bank.type_bill_id_seq
+    AS integer
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE bank.type_bill_id_seq OWNER TO ensler;
+
+--
+-- Name: type_bill_id_seq; Type: SEQUENCE OWNED BY; Schema: bank; Owner: ensler
+--
+
+ALTER SEQUENCE bank.type_bill_id_seq OWNED BY bank.type_bill.id;
+
+
+--
+-- Name: bills id; Type: DEFAULT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.bills ALTER COLUMN id SET DEFAULT nextval('bank.bills_id_seq'::regclass);
+
+
+--
+-- Name: clients id; Type: DEFAULT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.clients ALTER COLUMN id SET DEFAULT nextval('bank.clients_id_seq'::regclass);
+
+
+--
+-- Name: payments id; Type: DEFAULT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.payments ALTER COLUMN id SET DEFAULT nextval('bank.payments_id_seq'::regclass);
+
+
+--
+-- Name: type_bill id; Type: DEFAULT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.type_bill ALTER COLUMN id SET DEFAULT nextval('bank.type_bill_id_seq'::regclass);
+
+
+--
+-- Data for Name: bills; Type: TABLE DATA; Schema: bank; Owner: ensler
+--
+
+COPY bank.bills (id, type_bill, number, balance, user_id) FROM stdin;
+2	1	5602876140475497	$4,300.00	2
+4	4	4966900932381386	$5,000.00	2
+3	1	1600871474031577	$10,850.00	3
+1	1	9793682542341009	$9,850.00	1
+5	2	6198770964866444	$0.00	2
+\.
+
+
+--
+-- Data for Name: clients; Type: TABLE DATA; Schema: bank; Owner: ensler
+--
+
+COPY bank.clients (id, surname, name, patronymic, login, password, passport) FROM stdin;
+1	Краевой	Никита	Александрович	treloiii	$2a$04$SVYJz9PT2Sr6uWrtTjoTZuWXGpcww.HXWM3lqPJzdZxgmJ45FmYxK	7777777776
+2	Гарипов	Марсель	Русланович	ensler	$2a$04$0SEVESskgewL06k1YTsIF.sM5C3mZR5Vs8zIfU3YIbFNmvQbo2diW	7777777777
+3	Иванов	Иван	Иванович	testuser	$2a$04$OnyxKxRjhBDfuexPHt/Rbu240wmnDLI7a7HBLPPzdssla0pRoJWXi	0000000001
+\.
+
+
+--
+-- Data for Name: payments; Type: TABLE DATA; Schema: bank; Owner: ensler
+--
+
+COPY bank.payments (id, sender, recipient, amount, "time") FROM stdin;
+2	5602876140475497	1600871474031577	$1,000.00	2020-06-05 08:01:28.701795-04
+4	5602876140475497	4966900932381386	$5,000.00	2020-06-05 08:02:38.345666-04
+5	1600871474031577	9793682542341009	$150.00	2020-06-05 08:05:15.793229-04
+3	5602876140475497	9793682542341009	$200.00	2020-06-05 08:01:53.114656-04
+1	9793682542341009	5602876140475497	$500.00	2020-06-05 08:01:00.955653-04
+\.
+
+
+--
+-- Data for Name: type_bill; Type: TABLE DATA; Schema: bank; Owner: ensler
+--
+
+COPY bank.type_bill (id, name) FROM stdin;
+1	Default bill
+2	Mastercard
+3	Visa
+4	Mir
+\.
+
+
+--
+-- Name: bills_id_seq; Type: SEQUENCE SET; Schema: bank; Owner: ensler
+--
+
+SELECT pg_catalog.setval('bank.bills_id_seq', 5, true);
+
+
+--
+-- Name: clients_id_seq; Type: SEQUENCE SET; Schema: bank; Owner: ensler
+--
+
+SELECT pg_catalog.setval('bank.clients_id_seq', 3, true);
+
+
+--
+-- Name: payments_id_seq; Type: SEQUENCE SET; Schema: bank; Owner: ensler
+--
+
+SELECT pg_catalog.setval('bank.payments_id_seq', 5, true);
+
+
+--
+-- Name: type_bill_id_seq; Type: SEQUENCE SET; Schema: bank; Owner: ensler
+--
+
+SELECT pg_catalog.setval('bank.type_bill_id_seq', 4, true);
+
+
+--
+-- Name: clients clients_pk; Type: CONSTRAINT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.clients
+    ADD CONSTRAINT clients_pk PRIMARY KEY (id);
+
+
+--
+-- Name: payments payments_pk; Type: CONSTRAINT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.payments
+    ADD CONSTRAINT payments_pk PRIMARY KEY (id);
+
+
+--
+-- Name: bills_number_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX bills_number_uindex ON bank.bills USING btree (number);
+
+
+--
+-- Name: clients_id_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX clients_id_uindex ON bank.clients USING btree (id);
+
+
+--
+-- Name: clients_login_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX clients_login_uindex ON bank.clients USING btree (login);
+
+
+--
+-- Name: clients_passport_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX clients_passport_uindex ON bank.clients USING btree (passport);
+
+
+--
+-- Name: clients_password_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX clients_password_uindex ON bank.clients USING btree (password);
+
+
+--
+-- Name: payments_id_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX payments_id_uindex ON bank.payments USING btree (id);
+
+
+--
+-- Name: type_bill_id_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX type_bill_id_uindex ON bank.type_bill USING btree (id);
+
+
+--
+-- Name: type_bill_name_uindex; Type: INDEX; Schema: bank; Owner: ensler
+--
+
+CREATE UNIQUE INDEX type_bill_name_uindex ON bank.type_bill USING btree (name);
+
+
+--
+-- Name: bills bills_clients_id_fk; Type: FK CONSTRAINT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.bills
+    ADD CONSTRAINT bills_clients_id_fk FOREIGN KEY (user_id) REFERENCES bank.clients(id);
+
+
+--
+-- Name: bills bills_type_bill_id_fk; Type: FK CONSTRAINT; Schema: bank; Owner: ensler
+--
+
+ALTER TABLE ONLY bank.bills
+    ADD CONSTRAINT bills_type_bill_id_fk FOREIGN KEY (type_bill) REFERENCES bank.type_bill(id);
+
+
+--
+-- PostgreSQL database dump complete
+--
+
