@@ -22,6 +22,8 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatRadioModule } from '@angular/material/radio';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -60,7 +62,9 @@ import { SendMoneyComponent } from './components/send-money/send-money.component
     MatProgressSpinnerModule,
     FormsModule,
     MatTableModule,
+    MatRadioModule,
     MatExpansionModule,
+    MatSlideToggleModule
   ],
   providers: [
     AuthGuard,

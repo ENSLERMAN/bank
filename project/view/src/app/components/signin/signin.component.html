@@ -15,11 +15,14 @@
         <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon>
       </button>
     </mat-form-field>
-    <button mat-raised-button color="accent" class="w-50 mb-3" type="submit">ВОЙТИ</button>
-    <div class="w-50 btn-group" [ngClass]="{mobile: isMobile}">
-      <button mat-stroked-button color="warn" (click)="rememberPassword()" class="mr-3 w-100">О БОЖЕ Я ЗАБЫЛ ПАРОЛЬ!</button>
+    <div class="w-50" [ngClass]="{mobile: isMobile}">
+      <button mat-raised-button color="accent" class="w-100 mb-3" type="submit">ВОЙТИ</button>
+      <button mat-stroked-button color="warn" (click)="rememberPassword()" class="mb-3 w-100">О БОЖЕ Я ЗАБЫЛ ПАРОЛЬ!</button>
       <button mat-stroked-button color="basic" (click)="register()" class="w-100">ЗАРЕГИСТРИРОВАТЬСЯ</button>
     </div>
+    <mat-error *ngIf="error" class="my-3">
+      Неправильный <strong>логин </strong>или <strong>пароль</strong>
+    </mat-error>
   </form>
 </ng-container>
 </div>

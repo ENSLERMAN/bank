@@ -23,6 +23,10 @@ export class HttpService {
     return this.http.post(`${this.baseURL}/sessions`, data, this.options).toPromise();
   }
 
+  registerUser(data) {
+    return this.http.post(`${this.baseURL}/users`, data, this.options).toPromise();
+  }
+
   getUserInfo() {
     return this.http.get(`${this.baseURL}/private/whoami`).toPromise()
   }
