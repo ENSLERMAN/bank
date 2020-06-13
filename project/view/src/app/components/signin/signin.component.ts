@@ -53,7 +53,6 @@ export class SigninComponent implements OnInit, DoCheck {
         (res) => {
           if (res["status"] == 200) {
             console.log("Login successful");
-            //this.authService.authLogin(this.model);
             localStorage.setItem('isLoggedIn', "true");
             localStorage.setItem('token', this.f.email.value);
             this.router.navigate([this.returnUrl]);
@@ -67,7 +66,7 @@ export class SigninComponent implements OnInit, DoCheck {
   }
 
   rememberPassword() {
-    alert("ЭТА ФУНКЦИЯ ЕЩЕ НЕ РЕАЛИЗОВАНА, НО КОГДА ОНА БУДЕТ СДЕЛАНА, ТЕБЕ ОБ ЭТОМ НИКТО НЕ СКАЖЕТ")
+    alert("ЭТА ФУНКЦИЯ ЕЩЕ НЕ РЕАЛИЗОВАНА")
   }
 
   register() {

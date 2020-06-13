@@ -9,7 +9,7 @@ import {HttpService} from "./services/http.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, DoCheck, AfterContentInit {
+export class AppComponent implements OnInit, DoCheck {
 
   title = 'view';
   visibility: boolean = false;
@@ -52,17 +52,6 @@ export class AppComponent implements OnInit, DoCheck, AfterContentInit {
     }
   }
 
-  ngAfterContentInit() {
-    this.getUser().then(
-        (r => {
-          console.log("данные пользователя получены")
-        }),
-        (err => {
-          console.log("неудалось получить данные пользователя")
-        })
-    );
-  }
-
   ngDoCheck(): void {
     if (this.authGuard.isLoggedIn() == true) {
       this.visibility = true;
@@ -70,27 +59,32 @@ export class AppComponent implements OnInit, DoCheck, AfterContentInit {
       this.visibility = false;
     }
 
-    if (this.router.url === "/main") {
-      this.visibilityBack = false;
-      if (this.Hour >= 3 && this.Hour < 12) {
-        this.Text = "Доброе утро, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-      } else if (this.Hour >= 12 && this.Hour < 18) {
-        this.Text = "Добрый день, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-      } else if (this.Hour >= 18 && this.Hour < 24) {
-        this.Text = "Добрый вечер, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-      } else if (this.Hour >= 0 && this.Hour < 3) {
-        this.Text = "Доброй ночи, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+    this.getUser().then(() => {
+      if (this.router.url === "/main") {
+        this.visibilityBack = false;
+        if (this.Hour >= 3 && this.Hour < 12) {
+          this.Text = "Доброе утро, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+        } else if (this.Hour >= 12 && this.Hour < 18) {
+          this.Text = "Добрый день, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+        } else if (this.Hour >= 18 && this.Hour < 24) {
+          this.Text = "Добрый вечер, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+        } else if (this.Hour >= 0 && this.Hour < 3) {
+          this.Text = "Доброй ночи, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+        }
+      } else if (this.router.url === "/history") {
+        this.Text = "История переводов"
+        this.visibilityBack = true;
+      } else if (this.router.url === "/send_money") {
+        this.Text = "Перевод денег"
+        this.visibilityBack = true;
+      } else if (this.router.url === "/register") {
+        this.Text = ""
+        this.visibilityBack = false;
+      } else if (this.router.url === "/login") {
+        this.Text = ""
+        this.visibilityBack = false;
       }
-    } else if (this.router.url === "/history") {
-      this.Text = "История переводов"
-      this.visibilityBack = true;
-    } else if (this.router.url === "/send_money") {
-      this.Text = "Перевод денег"
-      this.visibilityBack = true;
-    } else if (this.router.url === "/register") {
-      this.Text = ""
-      this.visibilityBack = false;
-    }
+    })
 
   }
 

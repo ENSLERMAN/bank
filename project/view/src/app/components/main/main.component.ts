@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, HostListener, Inject, OnInit} from '@angular/core';
+import {AfterContentInit, Component, HostListener, Inject, OnDestroy, OnInit} from '@angular/core';
 import { HttpService } from "../../services/http.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 
