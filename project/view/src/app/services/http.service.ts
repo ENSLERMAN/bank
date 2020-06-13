@@ -43,6 +43,8 @@ export class HttpService {
     return this.http.get(`${this.baseURL}/private/get_payments`, this.options).toPromise();
   }
 
-  
+  sendMoney(data) {
+    return this.http.post(`${this.baseURL}/private/send_money`, data, this.options).toPromise();
+  }
 
 }

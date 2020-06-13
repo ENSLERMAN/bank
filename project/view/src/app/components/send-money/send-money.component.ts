@@ -1,6 +1,7 @@
 import {Component, DoCheck, OnInit} from '@angular/core';
 import {HttpService} from "../../services/http.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-send-money',
@@ -10,7 +11,8 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 export class SendMoneyComponent implements OnInit, DoCheck {
 
   constructor(
-      private http: HttpService
+      private http: HttpService,
+      private router: Router
   ) { }
 
   visibility: boolean = true;
@@ -36,8 +38,22 @@ export class SendMoneyComponent implements OnInit, DoCheck {
     }
   }
 
-  send() {
-
+  async send() {
+    await this.http.sendMoney({
+      "bill_id": this.sendMoney.value.billID,
+      "number_dest": parseInt(this.sendMoney.value.number),
+      "amount": parseInt(this.sendMoney.value.amount),
+    }).then(
+        (res) => {
+          if (res["status"] == 200) {
+            console.log("Transfer successful");
+            this.router.navigate(['/main']);
+          }
+        },
+        (err) => {
+          console.log("Запрос на перевод не прошёл")
+        }
+    );
   }
 
   async getBills() {
