@@ -1,4 +1,4 @@
-import {Component, HostListener, Inject, OnInit} from '@angular/core';
+import {AfterContentInit, Component, HostListener, Inject, OnInit} from '@angular/core';
 import { HttpService } from "../../services/http.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
 
@@ -11,7 +11,7 @@ export interface DialogData {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit {
+export class MainComponent implements OnInit, AfterContentInit {
 
   constructor(
       private http: HttpService,
@@ -32,10 +32,27 @@ export class MainComponent implements OnInit {
   TypeBill: number;
   visibility: boolean = true;
 
-  async ngOnInit() {
-    // @ts-ignore
-    this.UserInfo = await this.http.getUserInfo();
-    await this.getUserBills(this.UserInfo.id)
+  ngOnInit() {
+    this.getUser().then(
+        (async r => {
+          console.log("данные пользователя получены")
+          await this.getUserBills(this.UserInfo.id)
+        }),
+        (err => {
+          console.log("неудалось получить данные пользователя")
+        })
+    );
+  }
+
+  ngAfterContentInit() {
+    this.getUser().then(
+        (r => {
+          console.log("данные пользователя получены")
+        }),
+        (err => {
+          console.log("неудалось получить данные пользователя")
+        })
+    );
   }
 
   async getUserBills(id: number) {
@@ -84,6 +101,11 @@ export class MainComponent implements OnInit {
     } else {
       this.cols = 3;
     }
+  }
+
+  async getUser() {
+    // @ts-ignore
+    this.UserInfo = await this.http.getUserInfo();
   }
 
   openDialog(): void {

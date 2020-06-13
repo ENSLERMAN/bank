@@ -60,7 +60,7 @@ export class SigninComponent implements OnInit, DoCheck {
           }
         },
         (err) => {
-          console.log("jopa")
+          console.log("Ошибка авторизации")
           this.error = true;
         }
     );

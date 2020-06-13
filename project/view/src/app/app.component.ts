@@ -1,4 +1,4 @@
-import {Component, DoCheck, OnInit} from '@angular/core';
+import {AfterContentInit, Component, DoCheck, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "./services/auth.service";
 import {AuthGuard} from "./guards/auth.guard";
@@ -9,7 +9,7 @@ import {HttpService} from "./services/http.service";
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit, DoCheck {
+export class AppComponent implements OnInit, DoCheck, AfterContentInit {
 
   title = 'view';
   visibility: boolean = false;
@@ -36,14 +36,31 @@ export class AppComponent implements OnInit, DoCheck {
 
   async ngOnInit() {
     this.Hour = new Date().getHours();
-    // @ts-ignore
-    this.UserInfo = await this.http.getUserInfo();
+    this.getUser().then(
+        (r => {
+
+        }),
+        (err => {
+          console.log("неудалось получить данные пользователя")
+        })
+    );
 
     if (this.router.url === "/main") {
       this.visibilityBack = false;
     } else {
       this.visibilityBack = true;
     }
+  }
+
+  ngAfterContentInit() {
+    this.getUser().then(
+        (r => {
+          console.log("данные пользователя получены")
+        }),
+        (err => {
+          console.log("неудалось получить данные пользователя")
+        })
+    );
   }
 
   ngDoCheck(): void {
@@ -70,8 +87,16 @@ export class AppComponent implements OnInit, DoCheck {
     } else if (this.router.url === "/send_money") {
       this.Text = "Перевод денег"
       this.visibilityBack = true;
+    } else if (this.router.url === "/register") {
+      this.Text = ""
+      this.visibilityBack = false;
     }
 
+  }
+
+  async getUser() {
+    // @ts-ignore
+    this.UserInfo = await this.http.getUserInfo();
   }
 
   logout() {

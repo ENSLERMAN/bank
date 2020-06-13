@@ -61,11 +61,12 @@ export class SignupComponent implements OnInit, DoCheck {
         (res) => {
           if (res["status"] == 201) {
             console.log("Register successful");
-            this.login()
+            this.login();
+            this.router.navigate(['/main']);
           }
         },
         (err) => {
-          console.log("jopa")
+          console.log("Запрос на регистрацию не прошёл")
           this.error = true;
         }
     );
@@ -73,15 +74,15 @@ export class SignupComponent implements OnInit, DoCheck {
 
   async login() {
     await this.http.authUser({
-      "login": this.loginForm.value.email,
+      "login": this.loginForm.value.login,
       "password": this.loginForm.value.password,
     }).then(
         (res) => {
           if (res["status"] == 200) {
             console.log("login successful");
             localStorage.setItem('isLoggedIn', "true");
-            localStorage.setItem('token', this.f.email.value);
-            this.router.navigate([this.returnUrl]);
+            localStorage.setItem('token', this.f.login.value);
+            this.router.navigate(['/main']);
           }
         },
     )
