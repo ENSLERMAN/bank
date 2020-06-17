@@ -31,6 +31,7 @@ import {HttpClientModule, HTTP_INTERCEPTORS} from "@angular/common/http";
 import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 import { SendMoneyComponent } from './components/send-money/send-money.component';
+import { CardComponent } from './components/card/card.component';
 
 @NgModule({
   declarations: [
@@ -41,7 +42,8 @@ import { SendMoneyComponent } from './components/send-money/send-money.component
     MainComponent,
     DialogWindow,
     PaymentHistoryComponent,
-    SendMoneyComponent
+    SendMoneyComponent,
+    CardComponent
   ],
   imports: [
     BrowserModule,

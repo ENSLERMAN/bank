@@ -1,6 +1,7 @@
-import {AfterContentInit, Component, HostListener, Inject, OnDestroy, OnInit} from '@angular/core';
+import {Component, HostListener, Inject, OnDestroy, OnInit} from '@angular/core';
 import { HttpService } from "../../services/http.service";
 import {MAT_DIALOG_DATA, MatDialog, MatDialogRef} from "@angular/material/dialog";
+import {Router} from "@angular/router";
 
 export interface DialogData {
   TypeBill: number;
@@ -11,11 +12,12 @@ export interface DialogData {
   templateUrl: './main.component.html',
   styleUrls: ['./main.component.scss']
 })
-export class MainComponent implements OnInit, AfterContentInit {
+export class MainComponent implements OnInit {
 
   constructor(
       private http: HttpService,
-      public dialog: MatDialog
+      public dialog: MatDialog,
+      private router: Router,
   ) { }
 
   UserInfo: {
@@ -28,26 +30,27 @@ export class MainComponent implements OnInit, AfterContentInit {
   };
   cols: number = 3;
   Bills: object;
+  Text: string;
+  Hour: any;
 
   TypeBill: number;
   visibility: boolean = true;
 
   ngOnInit() {
+    this.Hour = new Date().getHours();
     this.getUser().then(
         (async r => {
           console.log("данные пользователя получены")
           await this.getUserBills(this.UserInfo.id)
-        }),
-        (err => {
-          console.log("неудалось получить данные пользователя")
-        })
-    );
-  }
-
-  ngAfterContentInit() {
-    this.getUser().then(
-        (r => {
-          console.log("данные пользователя получены")
+          if (this.Hour >= 3 && this.Hour < 12) {
+            this.Text = "Доброе утро, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+          } else if (this.Hour >= 12 && this.Hour < 18) {
+            this.Text = "Добрый день, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+          } else if (this.Hour >= 18 && this.Hour < 24) {
+            this.Text = "Добрый вечер, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+          } else if (this.Hour >= 0 && this.Hour < 3) {
+            this.Text = "Доброй ночи, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
+          }
         }),
         (err => {
           console.log("неудалось получить данные пользователя")

@@ -1,4 +1,4 @@
-import {AfterContentInit, Component, DoCheck, OnInit} from '@angular/core';
+import {AfterContentInit, Component, DoCheck, OnDestroy, OnInit} from '@angular/core';
 import {ActivatedRoute, Router} from "@angular/router";
 import {AuthService} from "./services/auth.service";
 import {AuthGuard} from "./guards/auth.guard";
@@ -31,25 +31,10 @@ export class AppComponent implements OnInit, DoCheck {
       private authService: AuthService,
       private authGuard: AuthGuard,
       private http: HttpService,
-      private route: ActivatedRoute
   ) { }
 
   async ngOnInit() {
-    this.Hour = new Date().getHours();
-    this.getUser().then(
-        (r => {
 
-        }),
-        (err => {
-          console.log("неудалось получить данные пользователя")
-        })
-    );
-
-    if (this.router.url === "/main") {
-      this.visibilityBack = false;
-    } else {
-      this.visibilityBack = true;
-    }
   }
 
   ngDoCheck(): void {
@@ -58,33 +43,6 @@ export class AppComponent implements OnInit, DoCheck {
     } else if (this.authGuard.isLoggedIn() == false) {
       this.visibility = false;
     }
-
-    this.getUser().then(() => {
-      if (this.router.url === "/main") {
-        this.visibilityBack = false;
-        if (this.Hour >= 3 && this.Hour < 12) {
-          this.Text = "Доброе утро, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-        } else if (this.Hour >= 12 && this.Hour < 18) {
-          this.Text = "Добрый день, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-        } else if (this.Hour >= 18 && this.Hour < 24) {
-          this.Text = "Добрый вечер, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-        } else if (this.Hour >= 0 && this.Hour < 3) {
-          this.Text = "Доброй ночи, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
-        }
-      } else if (this.router.url === "/history") {
-        this.Text = "История переводов"
-        this.visibilityBack = true;
-      } else if (this.router.url === "/send_money") {
-        this.Text = "Перевод денег"
-        this.visibilityBack = true;
-      } else if (this.router.url === "/register") {
-        this.Text = ""
-        this.visibilityBack = false;
-      } else if (this.router.url === "/login") {
-        this.Text = ""
-        this.visibilityBack = false;
-      }
-    })
 
   }
 
@@ -99,4 +57,5 @@ export class AppComponent implements OnInit, DoCheck {
     this.authService.logout();
     this.router.navigate(['/login']);
   }
+
 }

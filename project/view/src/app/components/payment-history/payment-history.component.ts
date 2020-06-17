@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import {HttpService} from "../../services/http.service";
+import {Router} from "@angular/router";
 
 @Component({
   selector: 'app-payment-history',
@@ -9,7 +10,8 @@ import {HttpService} from "../../services/http.service";
 export class PaymentHistoryComponent implements OnInit {
 
   constructor(
-      private http: HttpService
+      private http: HttpService,
+      private router: Router
   ) { }
 
   payments: any = [{}];
