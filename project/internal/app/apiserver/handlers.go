@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
+	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
 )
@@ -253,6 +254,7 @@ func (s *server) handleSendMoney() http.HandlerFunc {
 		session, err := s.sessionStore.Get(r, "bank-system")
 		if err != nil {
 			s.error(w, r, http.StatusInternalServerError, err)
+			return
 		}
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
 
@@ -267,5 +269,63 @@ func (s *server) handleSendMoney() http.HandlerFunc {
 		}
 
 		s.respond(w, r, http.StatusOK, nil)
+	}
+}
+
+func (s *server) GetUserBillByID() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var idParam = mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idParam)
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.User().FindByID(userID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		u, err := s.store.Bill().GetUserBillByID(id)
+		if err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, u)
+	}
+}
+
+func (s *server) GetUserPaymentsByID() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var idParam = mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idParam)
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.User().FindByID(userID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		u, err := s.store.Bill().GetUserPaymentsByID(id)
+		if err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, u)
 	}
 }

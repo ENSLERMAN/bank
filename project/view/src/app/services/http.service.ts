@@ -32,7 +32,7 @@ export class HttpService {
   }
 
   getUserBills() {
-    return this.http.get(`${this.baseURL}/private/get_bills`, this.options).toPromise();
+    return this.http.get(`${this.baseURL}/private/bills`, this.options).toPromise();
   }
 
   createBill(data) {

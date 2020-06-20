@@ -1,7 +1,6 @@
 package sqlstore
 
 import (
-	"database/sql"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/model"
 	"github.com/ENSLERMAN/soft-eng/project/internal/app/store"
 	"github.com/sirupsen/logrus"
@@ -74,7 +73,8 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 	rows, err := r.store.db.Queryx(`
 		SELECT DISTINCT id, sender, recipient, amount::numeric::float8, 
 		to_char(time AT TIME ZONE 'Europe/Moscow', 'HH24:MI:SS'),
-		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY')
+		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY'),
+		sender_id, rec_id
 		FROM bank.payments`)
 	if err != nil {
 		logrus.Error(err)
@@ -90,6 +90,8 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 			&u.Amount,
 			&u.Time,
 			&u.Date,
+			&u.SenderID,
+			&u.RecID,
 		)
 		if err != nil {
 			return nil, err
@@ -114,13 +116,44 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 // FindByUser - метод для сопоставления номера счета и юзера, нужен для перевода денег.
 func (r *BillRepository) FindByUser(userID, billID int) bool {
 
-	_, err := r.store.db.Exec(`
-		SELECT id, user_id FROM bank.bills WHERE id = $1 and user_id = $2`, billID, userID)
-	if err != nil || err == sql.ErrNoRows {
+	var count int
+
+	err := r.store.db.QueryRowx(`
+		SELECT COUNT(id) FROM bank.bills WHERE id = $1 and user_id = $2`, billID, userID,
+	).Scan(
+		&count,
+	); if err != nil {
 		return false
 	}
 
-	return true
+	if count == 1 {
+		return true
+	}
+
+	return false
+}
+
+// GetUserBillByID - получить счет клиента по ид
+func (r *BillRepository) GetUserBillByID(id int) (*model.Bill, error) {
+
+	u := &model.Bill{}
+
+	err := r.store.db.QueryRowx(`
+		SELECT id, type_bill, number, balance::numeric::float8, user_id FROM bank.bills WHERE bills.id = $1`, id,
+	).Scan(
+		&u.ID,
+		&u.Type,
+		&u.Number,
+		&u.Balance,
+		&u.UserID,
+	); if err != nil {
+		return nil, err
+	}
+	if err != nil {
+		logrus.Error(err)
+	}
+	return u, nil
+
 }
 
 func (r *BillRepository) FindByBill(userID, number int) bool {
@@ -154,6 +187,8 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 
 	u := &model.Bill{}
 	k := &model.Bill{}
+	var reqID int
+	var resID int
 
 	req := &u.Balance // баланс отправителя.
 	res := &k.Balance // баланс получателя.
@@ -161,8 +196,9 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 
 	// получаем номер карты и баланс отправителя.
 	if err := r.store.db.QueryRowx(`
-		SELECT balance::numeric::float8, number from bank.bills WHERE id = $1`, billID,
+		SELECT user_id, balance::numeric::float8, number from bank.bills WHERE id = $1`, billID,
 	).Scan(
+		&reqID,
 		&req,
 		&NumberSender,
 	); err != nil {
@@ -181,8 +217,9 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 
 	// получаем баланс получателя.
 	if err := r.store.db.QueryRowx(`
-		SELECT balance::numeric::float8 from bank.bills WHERE number = $1`, NumberDest,
+		SELECT user_id, balance::numeric::float8 from bank.bills WHERE number = $1`, NumberDest,
 	).Scan(
+		&resID,
 		&res,
 	); err != nil {
 		return err
@@ -204,7 +241,8 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 	}
 
 	_, err = r.store.db.Exec(`INSERT INTO bank.payments
-		(sender, recipient, amount, time) VALUES ($1, $2, $3, 'now')`, NumberSender, NumberDest, Amount)
+		(sender, recipient, amount, time, sender_id, rec_id) 
+		VALUES ($1, $2, $3, 'now', $4, $5)`, NumberSender, NumberDest, Amount, reqID, resID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -215,4 +253,52 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 	}
 
 	return nil
+}
+
+func (r *BillRepository) GetUserPaymentsByID(id int) ([]*model.Payment, error) {
+
+	arr := make([]*model.Payment, 0)
+
+	rows, err := r.store.db.Queryx(`
+		SELECT DISTINCT id, sender, recipient, amount::numeric::float8, 
+		to_char(time AT TIME ZONE 'Europe/Moscow', 'HH24:MI:SS'),
+		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY'),
+		sender_id, rec_id
+		FROM bank.payments
+		WHERE (sender_id = $1 OR rec_id = $1) `, id)
+	if err != nil {
+		logrus.Error(err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		u := new(model.Payment)
+		err := rows.Scan(
+			&u.ID,
+			&u.Sender,
+			&u.Recipient,
+			&u.Amount,
+			&u.Time,
+			&u.Date,
+			&u.SenderID,
+			&u.RecID,
+		)
+		if err != nil {
+			return nil, err
+		}
+		// t f
+		if u.SenderID == id {
+			u.Type = 1
+		// f t
+		} else if u.RecID == id {
+			u.Type = 2
+		// t t
+		} else if u.RecID == u.SenderID {
+			u.Type = 3
+		}
+
+		arr = append(arr, u)
+	}
+
+	return arr, nil
 }

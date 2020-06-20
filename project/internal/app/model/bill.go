@@ -23,6 +23,8 @@ type Payment struct {
 	Time string `json:"time"`
 	Date string `json:"date"`
 	Type int `json:"type"`
+	SenderID int `json:"sender_id"`
+	RecID int `json:"rec_id"`
 }
 
 // RandomizeCardNumber - рандомим номер карты для создания счета.

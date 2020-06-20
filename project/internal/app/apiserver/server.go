@@ -71,10 +71,12 @@ func (s *server) configureRouter() {
 	private.Use(s.authenticateUser)
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
 	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST", "OPTIONS")
-	private.HandleFunc("/get_bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/bills/{id}", s.GetUserBillByID()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/delete_bill", s.handleBillDelete()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST", "OPTIONS")
-	private.HandleFunc("/get_payments", s.handleGetAllUserPayments()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/payments", s.handleGetAllUserPayments()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/payments/{id}", s.GetUserPaymentsByID()).Methods("GET", "OPTIONS")
 }
 
 // handleWhoami - обработчик для проверки юзера.
