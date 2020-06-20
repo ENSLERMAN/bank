@@ -65,7 +65,7 @@ func (r *BillRepository) GetAllUserBills(id int) ([]*model.Bill, error) {
 	return arr, nil
 }
 
-// todo: ПЕРЕПИШИ ЭТУ ХУЙНЮ, ХОСПАДЕ, ТЫ ШО ДАУН?
+// GetAllUserPayments получить историю переводов пользователя
 func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 
 	arr := make([]*model.Payment, 0)
@@ -75,7 +75,8 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 		to_char(time AT TIME ZONE 'Europe/Moscow', 'HH24:MI:SS'),
 		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY'),
 		sender_id, rec_id
-		FROM bank.payments`)
+		FROM bank.payments
+		WHERE (sender_id = $1) OR (rec_id = $1)`, id)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -97,13 +98,11 @@ func (r *BillRepository) GetAllUserPayments(id int) ([]*model.Payment, error) {
 			return nil, err
 		}
 		//fmt.Printf("sender: %d = %t , rec: %d = %t\n", u.Sender, r.FindByBill(id, u.Sender), u.Recipient, r.FindByBill(id, u.Recipient))
-		if r.FindByBill(id, u.Sender) == false && r.FindByBill(id, u.Recipient) == false {
-			continue
-		} else if r.FindByBill(id, u.Sender) == true && r.FindByBill(id, u.Recipient) == false {
+		if u.SenderID == id && u.RecID != id {
 			u.Type = 1
-		} else if r.FindByBill(id, u.Sender) == false && r.FindByBill(id, u.Recipient) == true {
+		} else if u.SenderID != id && u.RecID == id {
 			u.Type = 2
-		} else if r.FindByBill(id, u.Sender) == true && r.FindByBill(id, u.Recipient) == true {
+		} else if u.SenderID == id && u.RecID == id {
 			u.Type = 3
 		}
 
