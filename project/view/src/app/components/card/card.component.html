@@ -1,1 +1,80 @@
-<p>card works!</p>
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
+
+<div>
+    <div class="d-flex justify-content-between align-items-center align-self-center mt-3" style="height: 36px">
+        <div class="d-flex justify-content-between align-items-center align-self-center">
+            <img [src]="this.bill.img" alt="" class="img-type mr-2">
+            <div class="privet">{{this.bill.name}} **{{this.bill.prenumber}}</div>
+        </div>
+        <div>
+            <button mat-flat-button color="warn" routerLink="/main">Назад</button>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-2">
+    <div class="col-sm">
+        <mat-card>
+            <div class="d-flex justify-content-between">
+                <h1>Баланс:</h1>
+                <h1>{{this.bill.money}} ₽</h1>
+            </div>
+            <div class="d-flex justify-content-between">
+                <h2>Срок действия до:</h2>
+                <h2>08/24</h2>
+            </div>
+        </mat-card>
+    </div>
+    <div class="col-sm">
+        <mat-list>
+            <mat-list-item>
+                <img src="/assets/icons/send_money.png" class="img-type mr-2" alt="">
+                <span>Перевести деньги</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <img src="/assets/icons/sendnudes.png" class="img-type mr-2" alt="">
+                <span>Перевод между счетами</span>
+            </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <img src="/assets/icons/get_money.png" class="img-type mr-2" alt="">
+                <span>Пополнить</span>
+            </mat-list-item>
+            <mat-list-item>
+                <img src="/assets/icons/delete_card.png" class="img-type mr-2" alt="">
+                <span>Заблокировать карту</span>
+            </mat-list-item>
+        </mat-list>
+    </div>
+</div>
+
+<ng-container>
+    <mat-accordion [style.display]="visibility==false?'block':'none'" class="my-3">
+        <h3>История операций</h3>
+        <mat-expansion-panel *ngFor="let item of this.payments">
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    <div class="d-flex w-100 justify-content-between align-items-center align-self-center">
+                        <div class="d-flex w-auto align-items-center align-self-center">
+                            <div>
+                                <img [src]="item.img" alt="image" class="img-type mr-2">
+                            </div>
+                            <div>{{item.text}}</div>
+                        </div>
+                        <div>{{item.amount}} ₽</div>
+                    </div>
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <div class="d-flex flex-column">
+                <div><h4>Дата: {{item.date}}</h4></div>
+                <div><h4>Время: {{item.time}}</h4></div>
+                <div><h4>Отправитель: **** **** **** {{item.sender}}</h4></div>
+                <div><h4>Получатель: **** **** **** {{item.recipient}}</h4></div>
+            </div>
+        </mat-expansion-panel>
+    </mat-accordion>
+
+</ng-container>

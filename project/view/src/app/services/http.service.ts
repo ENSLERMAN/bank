@@ -40,10 +40,18 @@ export class HttpService {
   }
 
   getUserPayments() {
-    return this.http.get(`${this.baseURL}/private/get_payments`, this.options).toPromise();
+    return this.http.get(`${this.baseURL}/private/payments`, this.options).toPromise();
   }
 
-  sendMoney(data) {
+  getUserPaymentsByBill(id) {
+    return this.http.get(`${this.baseURL}/private/payments/${id}`, this.options).toPromise();
+  }
+
+  getBillByID(id) {
+    return this.http.get(`${this.baseURL}/private/bills/${id}`, this.options).toPromise();
+  }
+
+    sendMoney(data) {
     return this.http.post(`${this.baseURL}/private/send_money`, data, this.options).toPromise();
   }
 

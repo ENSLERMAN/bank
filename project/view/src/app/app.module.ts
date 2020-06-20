@@ -24,6 +24,8 @@ import { MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatRadioModule } from '@angular/material/radio';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatListModule } from '@angular/material/list';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -65,7 +67,9 @@ import { CardComponent } from './components/card/card.component';
     FormsModule,
     MatTableModule,
     MatRadioModule,
+    MatDividerModule,
     MatExpansionModule,
+    MatListModule,
     MatSlideToggleModule
   ],
   providers: [
