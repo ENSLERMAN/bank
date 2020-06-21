@@ -15,9 +15,10 @@ type BillRepository interface {
 	GetAllUserBills(int) ([]*model.Bill, error)
 	GetAllUserPayments(int) ([]*model.Payment, error)
 	GetUserBillByID(id int) (*model.Bill, error)
-	GetUserPaymentsByID(id int) ([]*model.Payment, error)
+	GetUserPaymentsByID(userID, id int) ([]*model.Payment, error)
 	FindByUser(int, int) bool
 	FindByBill(int, int) bool
 	TransferMoney(int, uint, int) error
 	DeleteBill(int) error
+	GetMoney(int) error
 }

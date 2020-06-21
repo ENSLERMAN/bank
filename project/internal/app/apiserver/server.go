@@ -58,7 +58,7 @@ func (s *server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
-	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"})
+	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"})
 	originsOk := handlers.AllowedOrigins([]string{"http://localhost:4200"})
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	cockSucker := handlers.AllowCredentials()
@@ -73,10 +73,11 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/bills/{id}", s.GetUserBillByID()).Methods("GET", "OPTIONS")
-	private.HandleFunc("/delete_bill", s.handleBillDelete()).Methods("POST", "OPTIONS")
+	private.HandleFunc("/bills/{id}", s.handleBillDelete()).Methods("DELETE", "OPTIONS")
 	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/payments", s.handleGetAllUserPayments()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/payments/{id}", s.GetUserPaymentsByID()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/get_money/{id}", s.GetMoney()).Methods("GET", "OPTIONS")
 }
 
 // handleWhoami - обработчик для проверки юзера.

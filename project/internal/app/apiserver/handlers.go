@@ -150,17 +150,10 @@ func (s *server) authenticateUser(next http.Handler) http.Handler {
 // handleBillDelete - обработчик закрытия счета.
 func (s *server) handleBillDelete() http.HandlerFunc {
 
-	type request struct {
-		BillID int `json:"bill_id"`
-	}
-
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		req := &request{}
-		if err := json.NewDecoder(r.Body).Decode(req); err != nil {
-			s.error(w, r, http.StatusBadRequest, err)
-			return
-		}
+		var idParam = mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idParam)
 
 		// получаем ид юзера из куки.
 		session, err := s.sessionStore.Get(r, "bank-system")
@@ -170,13 +163,13 @@ func (s *server) handleBillDelete() http.HandlerFunc {
 		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
 
 		// если не подходит, кидаем ошибку 401.
-		if !(s.store.Bill().FindByUser(userID, req.BillID)) {
+		if !(s.store.Bill().FindByUser(userID, id)) {
 			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
 			return
 		}
 
 		// если все подошло, закрываем счет клиента ( просто удаляем ).
-		if err := s.store.Bill().DeleteBill(req.BillID); err != nil {
+		if err := s.store.Bill().DeleteBill(id); err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
@@ -320,12 +313,40 @@ func (s *server) GetUserPaymentsByID() http.HandlerFunc {
 			return
 		}
 
-		u, err := s.store.Bill().GetUserPaymentsByID(id)
+		u, err := s.store.Bill().GetUserPaymentsByID(userID, id)
 		if err != nil {
 			s.error(w, r, http.StatusUnprocessableEntity, err)
 			return
 		}
 
 		s.respond(w, r, http.StatusOK, u)
+	}
+}
+
+func (s *server) GetMoney() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		var idParam = mux.Vars(r)["id"]
+		id, err := strconv.Atoi(idParam)
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.User().FindByID(userID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		if err := s.store.Bill().GetMoney(id); err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, nil)
 	}
 }

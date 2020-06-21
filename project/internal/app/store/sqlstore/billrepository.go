@@ -254,9 +254,16 @@ func (r *BillRepository) TransferMoney(NumberDest int, Amount uint, billID int) 
 	return nil
 }
 
-func (r *BillRepository) GetUserPaymentsByID(id int) ([]*model.Payment, error) {
+func (r *BillRepository) GetUserPaymentsByID(userID, id int) ([]*model.Payment, error) {
 
 	arr := make([]*model.Payment, 0)
+	var number int
+
+	err := r.store.db.QueryRowx(`SELECT number from bank.bills WHERE id = $1`, id).Scan(
+		&number,
+	); if err != nil {
+		return nil, err
+	}
 
 	rows, err := r.store.db.Queryx(`
 		SELECT DISTINCT id, sender, recipient, amount::numeric::float8, 
@@ -264,7 +271,7 @@ func (r *BillRepository) GetUserPaymentsByID(id int) ([]*model.Payment, error) {
 		to_char(time AT TIME ZONE 'Europe/Moscow', 'DD.MM.YYYY'),
 		sender_id, rec_id
 		FROM bank.payments
-		WHERE (sender_id = $1 OR rec_id = $1) `, id)
+		WHERE (sender = $1 OR recipient = $1)`, number)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -286,10 +293,10 @@ func (r *BillRepository) GetUserPaymentsByID(id int) ([]*model.Payment, error) {
 			return nil, err
 		}
 		// t f
-		if u.SenderID == id {
+		if u.SenderID == userID && u.RecID != userID {
 			u.Type = 1
 		// f t
-		} else if u.RecID == id {
+		} else if u.SenderID != userID && u.RecID == userID {
 			u.Type = 2
 		// t t
 		} else if u.RecID == u.SenderID {
@@ -300,4 +307,44 @@ func (r *BillRepository) GetUserPaymentsByID(id int) ([]*model.Payment, error) {
 	}
 
 	return arr, nil
+}
+
+func (r *BillRepository) GetMoney(id int) error {
+
+	var NumberDest int
+	var balance []uint8
+
+	// обновляем данные у получателя и отправителя.
+	tx, err := r.store.db.Begin()
+
+	// получаем номер карты и баланс отправителя.
+	if err := r.store.db.QueryRowx(`
+		SELECT number, balance from bank.bills WHERE id = $1`, id,
+	).Scan(
+		&NumberDest,
+		&balance,
+	); err != nil {
+		return err
+	}
+
+	_, err = r.store.db.Exec(`UPDATE bank.bills SET balance = balance + money(5000) WHERE id = $1`, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	_, err = r.store.db.Exec(`INSERT INTO bank.payments
+		(sender, recipient, amount, time, sender_id, rec_id) 
+		VALUES ($1, $2, $3, 'now', $4, $5)`, 1000000000001001, NumberDest, 5000, 0, id)
+	if err != nil {
+		tx.Rollback()
+		return err
+	}
+
+	if tx.Commit() != nil {
+		return err
+	}
+
+	return nil
+
 }
