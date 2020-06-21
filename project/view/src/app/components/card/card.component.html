@@ -31,21 +31,24 @@
         <mat-list>
             <mat-list-item>
                 <img src="/assets/icons/send_money.png" class="img-type mr-2" alt="">
-                <span>Перевести деньги</span>
+                <span routerLink="/send_money"
+                      [queryParams]="{'selected':'0'}">Перевести деньги</span>
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-list-item>
                 <img src="/assets/icons/sendnudes.png" class="img-type mr-2" alt="">
-                <span>Перевод между счетами</span>
+                <span routerLink="/send_money"
+                    [queryParams]="{'selected':'1'}">Перевод между счетами</span>
             </mat-list-item>
             <mat-divider></mat-divider>
             <mat-list-item>
                 <img src="/assets/icons/get_money.png" class="img-type mr-2" alt="">
-                <span>Пополнить</span>
+                <span (click)="getBabos()">Пополнить</span>
             </mat-list-item>
+            <mat-divider></mat-divider>
             <mat-list-item>
                 <img src="/assets/icons/delete_card.png" class="img-type mr-2" alt="">
-                <span>Заблокировать карту</span>
+                <span (click)="deleteCard()">Заблокировать карту</span>
             </mat-list-item>
         </mat-list>
     </div>

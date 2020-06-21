@@ -11,7 +11,8 @@ export class CardComponent implements OnInit {
 
   constructor(
       private http: HttpService,
-      private activeRoute: ActivatedRoute
+      private activeRoute: ActivatedRoute,
+      private router: Router
   ) {
     this.activeRoute.params.subscribe((param)=> {
       this.id = param.id;
@@ -81,6 +82,48 @@ export class CardComponent implements OnInit {
   async getBill() {
     this.bill = await this.http.getBillByID(this.id);
     this.bill = this.bill["body"];
+  }
+
+  async getBabos() {
+    this.visibility = true;
+    this.http.getMoney(this.id).then(()=> {
+          this.getBill().then(()=> {
+            this.bill.prenumber = this.bill.number % 10000
+            switch (this.bill.type) {
+              case 1: {
+                this.bill.img = "assets/icons/card.png";
+                this.bill.name = "Лицевой счет"
+                break
+              }
+              case 2: {
+                this.bill.img = "assets/icons/mastercard.png"
+                this.bill.name = "Mastercard"
+                break
+              }
+              case 3: {
+                this.bill.img = "assets/icons/visa.png"
+                this.bill.name = "Visa"
+                break
+              }
+              case 4: {
+                this.bill.img = "assets/icons/mir.png"
+                this.bill.name = "МИР"
+                break
+              }
+            }
+          })
+          this.getPayments().then(() => {
+            console.log(this.payments)
+          })
+    }).finally(()=> {
+      this.visibility = false;
+    })
+  }
+
+  deleteCard() {
+    this.http.deleteBill(this.id).then(()=>{
+      this.router.navigate(["/main"]);
+    })
   }
 
 }

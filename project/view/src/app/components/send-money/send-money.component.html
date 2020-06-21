@@ -11,39 +11,83 @@
     </div>
 </div>
 
-<div [style.display]="visibility==false?'block':'none'">
-    <ng-container>
-        <form [formGroup]="sendMoney" (ngSubmit)="send()">
-            <div class="d-flex flex-column w-50" [ngClass]="{mobile: isMobile}">
-                <mat-form-field class="w-100" appearance="fill" color="accent">
-                    <mat-label>С какого счёта произвести перевод?</mat-label>
-                    <mat-select formControlName="billID">
-                        <mat-option *ngFor="let item of this.Bills" [value]="item.id">
-                            <img [src]="item.img" alt="card image" class="cardImg">
-                            ** {{item.number}} - Баланс {{item.money}} ₽
-                        </mat-option>
-                    </mat-select>
-                </mat-form-field>
-                <mat-form-field class="w-100" appearance="fill" color="accent">
-                    <mat-label>Номер счёта получателя</mat-label>
-                    <input formControlName="number" matInput placeholder="0000000000000000">
-                    <button mat-button *ngIf="sendMoney.controls['number'].value"
-                            matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['number'].reset()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-                <mat-form-field class="w-100" appearance="fill" color="accent">
-                    <mat-label>Сумма к отправке</mat-label>
-                    <input formControlName="amount" matInput placeholder="0">
-                    <mat-icon matPrefix>₽</mat-icon>
-                    <button mat-button *ngIf="sendMoney.controls['amount'].value"
-                            matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['amount'].reset()">
-                        <mat-icon>close</mat-icon>
-                    </button>
-                </mat-form-field>
-                <button [disabled]="sendMoney.invalid" mat-flat-button color="accent" type="submit">ОТПРАВИТЬ</button>
-            </div>
-        </form>
-    </ng-container>
+<mat-tab-group [selectedIndex]="selected"
+               color="accent" mat-align-tabs="start">
 
-</div>
+    <mat-tab label="На другой счёт">
+        <div [style.display]="visibility==false?'block':'none'" class="mt-3">
+            <ng-container>
+                <form [formGroup]="sendMoney" (ngSubmit)="send()">
+                    <div class="d-flex flex-column w-50" [ngClass]="{mobile: isMobile}">
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>С какого счёта произвести перевод?</mat-label>
+                            <mat-select formControlName="billID">
+                                <mat-option *ngFor="let item of this.Bills" [value]="item.id">
+                                    <img [src]="item.img" alt="card image" class="cardImg">
+                                    ** {{item.prenumber}} - Баланс {{item.money}} ₽
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>Номер счёта получателя</mat-label>
+                            <input formControlName="number" matInput placeholder="0000000000000000">
+                            <button mat-button *ngIf="sendMoney.controls['number'].value"
+                                    matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['number'].reset()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>Сумма к отправке</mat-label>
+                            <input formControlName="amount" matInput placeholder="0">
+                            <mat-icon matPrefix>₽</mat-icon>
+                            <button mat-button *ngIf="sendMoney.controls['amount'].value"
+                                    matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney.controls['amount'].reset()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <button [disabled]="sendMoney.invalid" mat-flat-button color="accent" type="submit">ОТПРАВИТЬ</button>
+                    </div>
+                </form>
+            </ng-container>
+        </div>
+    </mat-tab>
+
+    <mat-tab label="На свой счёт">
+        <div [style.display]="visibility==false?'block':'none'" class="mt-3">
+            <ng-container>
+                <form [formGroup]="sendMoney2" (ngSubmit)="send2()">
+                    <div class="d-flex flex-column w-50" [ngClass]="{mobile: isMobile}">
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>С какого счёта произвести перевод?</mat-label>
+                            <mat-select formControlName="billIDsend">
+                                <mat-option *ngFor="let item of this.Bills" [value]="item.id">
+                                    <img [src]="item.img" alt="card image" class="cardImg">
+                                    ** {{item.prenumber}} - Баланс {{item.money}} ₽
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>На какой счёт произвести перевод?</mat-label>
+                            <mat-select formControlName="billIDrec">
+                                <mat-option *ngFor="let item of this.Bills" [value]="item.number">
+                                    <img [src]="item.img" alt="card image" class="cardImg">
+                                    ** {{item.prenumber}} - Баланс {{item.money}} ₽
+                                </mat-option>
+                            </mat-select>
+                        </mat-form-field>
+                        <mat-form-field class="w-100" appearance="fill" color="accent">
+                            <mat-label>Сумма к отправке</mat-label>
+                            <input formControlName="amount" matInput placeholder="0">
+                            <mat-icon matPrefix>₽</mat-icon>
+                            <button mat-button *ngIf="sendMoney2.controls['amount'].value"
+                                    matSuffix mat-icon-button aria-label="Clear" (click)="sendMoney2.controls['amount'].reset()">
+                                <mat-icon>close</mat-icon>
+                            </button>
+                        </mat-form-field>
+                        <button [disabled]="sendMoney2.invalid" mat-flat-button color="accent" type="submit">ОТПРАВИТЬ</button>
+                    </div>
+                </form>
+            </ng-container>
+        </div>
+    </mat-tab>
+</mat-tab-group>

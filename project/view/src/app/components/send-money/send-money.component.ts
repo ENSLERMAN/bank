@@ -1,7 +1,7 @@
 import {Component, DoCheck, OnInit} from '@angular/core';
 import {HttpService} from "../../services/http.service";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {Router} from "@angular/router";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-send-money',
@@ -12,13 +12,22 @@ export class SendMoneyComponent implements OnInit, DoCheck {
 
   constructor(
       private http: HttpService,
-      private router: Router
-  ) { }
+      private router: Router,
+      private activeRoute: ActivatedRoute
+  ) {
+      activeRoute.queryParams.subscribe(
+          (queryParam: any) => {
+              this.selected = queryParam['selected']
+          }
+      )
+  }
 
   visibility: boolean = true;
   Bills: any = [{}];
   sendMoney: FormGroup;
+  sendMoney2: FormGroup;
   isMobile: boolean = false;
+  selected: any;
 
   ngOnInit(): void {
     this.getBills().then().finally(() => {
@@ -29,7 +38,13 @@ export class SendMoneyComponent implements OnInit, DoCheck {
       billID: new FormControl('', [Validators.required, Validators.required]),
       number: new FormControl('', [Validators.required, Validators.pattern(RegExp("^[0-9]{16}$"))]),
       amount: new FormControl('', [Validators.required, Validators.pattern(RegExp("^[0-9]+$"))])
-    })
+    });
+
+    this.sendMoney2 = new FormGroup({
+        billIDsend: new FormControl('', [Validators.required, Validators.required]),
+        billIDrec: new FormControl('', [Validators.required, Validators.required]),
+        amount: new FormControl('', [Validators.required, Validators.pattern(RegExp("^[0-9]+$"))])
+    });
   }
 
   ngDoCheck() {
@@ -56,6 +71,24 @@ export class SendMoneyComponent implements OnInit, DoCheck {
     );
   }
 
+    async send2() {
+        await this.http.sendMoney({
+            "bill_id": this.sendMoney2.value.billIDsend,
+            "number_dest": this.sendMoney2.value.billIDrec,
+            "amount": parseInt(this.sendMoney2.value.amount),
+        }).then(
+            (res) => {
+                if (res["status"] == 200) {
+                    console.log("Transfer successful");
+                    this.router.navigate(['/main']);
+                }
+            },
+            (err) => {
+                console.log("Запрос на перевод не прошёл")
+            }
+        );
+    }
+
   async getBills() {
     this.Bills = await this.http.getUserBills();
     this.Bills = this.Bills["body"]
@@ -63,7 +96,7 @@ export class SendMoneyComponent implements OnInit, DoCheck {
 
     for (let item of this.Bills) {
 
-      item.number = item.number % 10000;
+      item.prenumber = item.number % 10000;
 
       if (item.type === 1) {
           item.img = "assets/icons/card.png";
