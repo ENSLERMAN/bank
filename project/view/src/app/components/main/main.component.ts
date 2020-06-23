@@ -32,15 +32,23 @@ export class MainComponent implements OnInit {
   Bills: object;
   Text: string;
   Hour: any;
+  rate:any = {
+    "Date": null,
+    "PreviousDate": null,
+    "PreviousURL": null,
+    "Timestamp": null,
+    "Valute": {}
+  }
 
   TypeBill: number;
   visibility: boolean = true;
 
   ngOnInit() {
+    this.getRate().then()
     this.Hour = new Date().getHours();
     this.getUser().then(
         (async r => {
-          console.log("данные пользователя получены")
+          // console.log("данные пользователя получены")
           await this.getUserBills(this.UserInfo.id)
           if (this.Hour >= 3 && this.Hour < 12) {
             this.Text = "Доброе утро, " + this.UserInfo?.name + " " + this.UserInfo?.patronymic + "!";
@@ -134,6 +142,11 @@ export class MainComponent implements OnInit {
     }).then(()=> {
       this.getUserBills(this.UserInfo.id)
     })
+  }
+
+  async getRate() {
+    this.rate = await this.http.getDailyRate()
+    // console.log(this.rate)
   }
 
 }

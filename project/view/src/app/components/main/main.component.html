@@ -37,10 +37,11 @@
                 </mat-card>
             </div>
 
-            <div class="col mb-3">
+            <div class="col mb-3" *ngIf="rate" routerLink="/daily_rate">
                 <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
-                    <img src="assets/icons/statement.png" alt="" class="icons">
-                    <h3>Заказать выписку</h3>
+                    <h2>Курс на сегодня</h2>
+                    <h1>$ = {{this.rate.Valute?.USD?.Value}} ₽</h1>
+                    <h1>€ = {{this.rate.Valute?.EUR?.Value}} ₽</h1>
                 </mat-card>
             </div>
 
@@ -51,14 +52,7 @@
                 </mat-card>
             </div>
 
-            <div class="col mb-3">
-                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
-                    <img src="assets/icons/OnlinePayment.png" alt="" class="icons">
-                    <h3>Оплатить ЖКХ</h3>
-                </mat-card>
-            </div>
-
-            <div class="col mb-3">
+            <div class="col mb-3" routerLink="/payments">
                 <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
                     <img src="assets/icons/OnlineStore.png" alt="" class="icons">
                     <h3>Оплатить покупки</h3>

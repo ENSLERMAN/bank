@@ -46,6 +46,22 @@
                             </button>
                         </mat-form-field>
                         <button [disabled]="sendMoney.invalid" mat-flat-button color="accent" type="submit">ОТПРАВИТЬ</button>
+                        <mat-accordion class="my-3">
+                            <mat-expansion-panel>
+                                <mat-expansion-panel-header>
+                                    <mat-panel-title>
+                                        Список счётов
+                                    </mat-panel-title>
+                                    <mat-panel-description>
+                                        для помощи если шо
+                                    </mat-panel-description>
+                                </mat-expansion-panel-header>
+
+                                <ng-container *ngFor="let item of this.restBills">
+                                    <div>{{item}}</div>
+                                </ng-container>
+                            </mat-expansion-panel>
+                        </mat-accordion>
                     </div>
                 </form>
             </ng-container>

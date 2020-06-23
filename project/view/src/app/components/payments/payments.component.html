@@ -1,0 +1,14 @@
+<div class="privet">Оплата покупок</div>
+<div class="h-100 w-100 d-flex flex-column justify-content-center align-items-center align-content-center">
+    <div class="h-100 w-25" [ngClass]="{mobile: isMobile}">
+        <button mat-raised-button color="accent" (click)="onPay()" class="w-100 my-3">Оплатить что-нибудь</button>
+        <button mat-raised-button color="warn" routerLink="/main" class="w-100">Вернуться назад</button>
+    </div>
+
+    <div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+        <mat-progress-spinner mode="indeterminate" color="warn"></mat-progress-spinner>
+    </div>
+
+    <iframe class="my-3" allow="autoplay *; encrypted-media *;" frameborder="0" height="300" style="width:100%;max-width:660px;overflow:hidden;background:transparent;" sandbox="allow-forms allow-popups allow-same-origin allow-scripts allow-storage-access-by-user-activation allow-top-navigation-by-user-activation" src="https://embed.music.apple.com/ru/album/old-blood/1512811972"></iframe>
+</div>
+

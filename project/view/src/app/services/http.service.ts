@@ -63,4 +63,12 @@ export class HttpService {
     return this.http.delete(`${this.baseURL}/private/bills/${id}`, this.options).toPromise();
   }
 
+  getDailyRate() {
+    return this.http.get("https://www.cbr-xml-daily.ru/daily_json.js").toPromise();
+  }
+
+  getRestOfTheBills() {
+    return this.http.get(`${this.baseURL}/private/get_bills`, this.options).toPromise();
+  }
+
 }

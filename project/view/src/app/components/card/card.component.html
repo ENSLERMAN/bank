@@ -50,12 +50,17 @@
                 <img src="/assets/icons/delete_card.png" class="img-type mr-2" alt="">
                 <span (click)="deleteCard()">Заблокировать карту</span>
             </mat-list-item>
+            <mat-divider></mat-divider>
+            <mat-list-item>
+                <img src="/assets/icons/statement.png" class="img-type mr-2" alt="">
+                <span (click)="makeStatement()">Заказать выписку</span>
+            </mat-list-item>
         </mat-list>
     </div>
 </div>
 
 <ng-container>
-    <mat-accordion [style.display]="visibility==false?'block':'none'" class="my-3">
+    <mat-accordion [style.display]="visibility==false?'block':'none'" class="mt-3">
         <h3>История операций</h3>
         <mat-expansion-panel *ngFor="let item of this.payments">
             <mat-expansion-panel-header>

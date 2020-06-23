@@ -27,6 +27,7 @@ import { MatRadioModule } from '@angular/material/radio';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatListModule } from '@angular/material/list';
 import { MatTabsModule } from '@angular/material/tabs';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { AuthGuard } from "./guards/auth.guard";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -35,6 +36,8 @@ import {HttpRequestInterceptor} from "./HttpRequestInterceptor";
 import { PaymentHistoryComponent } from './components/payment-history/payment-history.component';
 import { SendMoneyComponent } from './components/send-money/send-money.component';
 import { CardComponent } from './components/card/card.component';
+import { PaymentsComponent } from './components/payments/payments.component';
+import { DailyRateComponent } from './components/daily-rate/daily-rate.component';
 
 @NgModule({
   declarations: [
@@ -46,7 +49,9 @@ import { CardComponent } from './components/card/card.component';
     DialogWindow,
     PaymentHistoryComponent,
     SendMoneyComponent,
-    CardComponent
+    CardComponent,
+    PaymentsComponent,
+    DailyRateComponent
   ],
   imports: [
     BrowserModule,
@@ -72,6 +77,7 @@ import { CardComponent } from './components/card/card.component';
     MatExpansionModule,
     MatTabsModule,
     MatListModule,
+    MatSnackBarModule,
     MatSlideToggleModule
   ],
   providers: [

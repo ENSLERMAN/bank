@@ -1,0 +1,18 @@
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
+
+<div>
+    <div class="d-flex justify-content-between align-items-center align-self-center mt-3" style="height: 36px">
+        <div class="privet">Курс валют на сегодня</div>
+        <div>
+            <button mat-flat-button color="warn" routerLink="/main">Назад</button>
+        </div>
+    </div>
+</div>
+
+<ng-container>
+    <div [style.display]="visibility==false?'block':'none'" class="my-3">
+        <iframe style="width:100%;border:0;overflow:hidden;background-color:transparent;height:540px" scrolling="no" src="https://fortrader.org/informers/getInformer?st=11&cat=7&title=%D0%9A%D1%83%D1%80%D1%81%D1%8B%20%D0%B2%D0%B0%D0%BB%D1%8E%D1%82%20%D0%A6%D0%91%20%D0%A0%D0%A4&texts=%7B%22toolTitle%22%3A%22%D0%92%D0%B0%D0%BB%D1%8E%D1%82%D0%B0%22%2C%22todayCourse%22%3A%22%22%7D&mult=0.98&showGetBtn=0&hideHeader=1&hideDate=0&w=0&codes=1&colors=titleTextColor%3Dffffff%2CtitleBackgroundColor%3D444444%2CthTextColor%3Dffffff%2CthBackgroundColor%3D444444%2CsymbolTextColor%3Dffffff%2CtableTextColor%3Dffffff%2CborderTdColor%3D666666%2CtableBorderColor%3D444444%2CprofitTextColor%3D89bb50%2CprofitBackgroundColor%3Deaf7e1%2ClossTextColor%3Dff1616%2ClossBackgroundColor%3Df6e1e1%2CoddBackgroundTrColor%3D444444%2CevenBackgroundTrColor%3D444444%2CdataTextColor%3Dffffff%2CdataBackgroundColor%3D444444%2CinformerLinkTextColor%3D454545%2CinformerLinkBackgroundColor%3Dfff&items=2%2C21%2C30%2C11%2C27%2C49%2C14&columns=todayCourse&toCur=11111"></iframe>
+    </div>
+</ng-container>

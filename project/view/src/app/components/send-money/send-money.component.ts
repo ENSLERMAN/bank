@@ -28,9 +28,12 @@ export class SendMoneyComponent implements OnInit, DoCheck {
   sendMoney2: FormGroup;
   isMobile: boolean = false;
   selected: any;
+  restBills: any;
 
   ngOnInit(): void {
-    this.getBills().then().finally(() => {
+    this.getBills().then(()=> {
+        this.getRestOfTheBills().then()
+    }).finally(() => {
       this.visibility = false;
     });
 
@@ -51,6 +54,12 @@ export class SendMoneyComponent implements OnInit, DoCheck {
     if (document.documentElement.clientHeight > document.documentElement.clientWidth) {
       this.isMobile = true
     }
+  }
+
+  async getRestOfTheBills() {
+      this.restBills = await this.http.getRestOfTheBills();
+      this.restBills = this.restBills["body"]
+      console.log(this.restBills)
   }
 
   async send() {
