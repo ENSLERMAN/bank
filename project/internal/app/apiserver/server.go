@@ -72,6 +72,7 @@ func (s *server) configureRouter() {
 	private.HandleFunc("/whoami", s.handleWhoami()).Methods("GET")
 	private.HandleFunc("/create_bill", s.handleBillCreate()).Methods("POST", "OPTIONS")
 	private.HandleFunc("/bills", s.handleGetAllUserBills()).Methods("GET", "OPTIONS")
+	private.HandleFunc("/get_bills", s.GetRestOfTheBills()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/bills/{id}", s.GetUserBillByID()).Methods("GET", "OPTIONS")
 	private.HandleFunc("/bills/{id}", s.handleBillDelete()).Methods("DELETE", "OPTIONS")
 	private.HandleFunc("/send_money", s.handleSendMoney()).Methods("POST", "OPTIONS")

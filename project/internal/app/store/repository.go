@@ -21,4 +21,5 @@ type BillRepository interface {
 	TransferMoney(int, uint, int) error
 	DeleteBill(int) error
 	GetMoney(int) error
+	GetRestOfTheBills(int) ([]int, error)
 }

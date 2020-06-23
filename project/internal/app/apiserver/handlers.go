@@ -350,3 +350,29 @@ func (s *server) GetMoney() http.HandlerFunc {
 		s.respond(w, r, http.StatusOK, nil)
 	}
 }
+
+func (s *server) GetRestOfTheBills() http.HandlerFunc {
+
+	return func(w http.ResponseWriter, r *http.Request) {
+
+		session, err := s.sessionStore.Get(r, "bank-system")
+		if err != nil {
+			s.error(w, r, http.StatusInternalServerError, err)
+		}
+		userID, _ := strconv.Atoi(fmt.Sprint(session.Values["user_id"]))
+
+		_, err = s.store.User().FindByID(userID)
+		if err != nil {
+			s.error(w, r, http.StatusUnauthorized, errNotAuthenticated)
+			return
+		}
+
+		u, err := s.store.Bill().GetRestOfTheBills(userID)
+		if err != nil {
+			s.error(w, r, http.StatusUnprocessableEntity, err)
+			return
+		}
+
+		s.respond(w, r, http.StatusOK, u)
+	}
+}

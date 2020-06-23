@@ -312,6 +312,7 @@ func (r *BillRepository) GetUserPaymentsByID(userID, id int) ([]*model.Payment, 
 func (r *BillRepository) GetMoney(id int) error {
 
 	var NumberDest int
+	var UserID int
 	var balance []uint8
 
 	// обновляем данные у получателя и отправителя.
@@ -319,10 +320,11 @@ func (r *BillRepository) GetMoney(id int) error {
 
 	// получаем номер карты и баланс отправителя.
 	if err := r.store.db.QueryRowx(`
-		SELECT number, balance from bank.bills WHERE id = $1`, id,
+		SELECT number, balance, user_id from bank.bills WHERE id = $1`, id,
 	).Scan(
 		&NumberDest,
 		&balance,
+		&UserID,
 	); err != nil {
 		return err
 	}
@@ -335,7 +337,7 @@ func (r *BillRepository) GetMoney(id int) error {
 
 	_, err = r.store.db.Exec(`INSERT INTO bank.payments
 		(sender, recipient, amount, time, sender_id, rec_id) 
-		VALUES ($1, $2, $3, 'now', $4, $5)`, 1000000000001001, NumberDest, 5000, 0, id)
+		VALUES ($1, $2, $3, 'now', $4, $5)`, 1000000000001001, NumberDest, 5000, 0, UserID)
 	if err != nil {
 		tx.Rollback()
 		return err
@@ -346,5 +348,33 @@ func (r *BillRepository) GetMoney(id int) error {
 	}
 
 	return nil
+
+}
+
+
+func (r *BillRepository) GetRestOfTheBills(id int) ([]int, error) {
+
+	arr := make([]int, 0)
+	var Number int
+
+	rows, err := r.store.db.Queryx(`
+		SELECT number FROM bank.bills WHERE bills.user_id != $1`, id)
+	if err != nil {
+		logrus.Error(err)
+	}
+	for rows.Next() {
+		err := rows.Scan(
+			&Number,
+		)
+		if err != nil {
+			return nil, err
+		}
+		arr = append(arr, Number)
+	}
+	err = rows.Err()
+	if err != nil {
+		logrus.Error(err)
+	}
+	return arr, nil
 
 }
