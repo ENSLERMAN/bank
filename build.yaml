@@ -1,7 +1,7 @@
 configuration:
  dir: project
 stages:
- build:
+ build-back:
   instructions:
    - sh: echo START BUILD
    - sh: pwd
@@ -9,4 +9,8 @@ stages:
    - ish: docker stop bank_back
    - ish: docker rm bank_back
    - sh: docker run -d --name bank_back -p 8040:%%PORT%% bank_back
-   - sh: echo COMPLETE 
+   - sh: echo COMPLETE
+ build-front:
+   instructions:
+    - sh: echo BUILD FRONT
+    - sh: ( cd view ; npm i )

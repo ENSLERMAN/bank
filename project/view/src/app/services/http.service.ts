@@ -15,7 +15,7 @@ export class HttpService {
     withCredentials: true
   };
 
-  private baseURL: string = "http://localhost:8081";
+  private baseURL: string = "http://server.enslerman.ru";
 
   constructor(private http: HttpClient) { }
 
