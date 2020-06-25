@@ -1,5 +1,5 @@
 configuration:
- target: project
+ dir: project
 stages:
  build:
   instructions:
