@@ -10,7 +10,3 @@ stages:
    - ish: docker rm bank_back
    - sh: docker run -d --name bank_back -p 8040:8080 bank_back
    - sh: echo COMPLETE
- build-front:
-   instructions:
-    - sh: echo BUILD FRONT
-    - sh: ( cd view ; npm i )
