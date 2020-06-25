@@ -4,6 +4,7 @@ stages:
  build:
   instructions:
    - sh: echo START BUILD
+   - sh: pwd
    - sh: docker build -t bank_back --build-arg LOG=%%LOG%% --build-arg DB_URL=%%BURL%% --build-arg PORT=%%PORT%% --build-arg KEY=%%KEY%% .
    - ish: docker stop bank_back
    - ish: docker rm bank_back
