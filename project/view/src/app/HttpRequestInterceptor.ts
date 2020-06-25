@@ -10,7 +10,7 @@ import { Observable } from 'rxjs';
 export class HttpRequestInterceptor implements HttpInterceptor {
 
     intercept(request: HttpRequest<any>, next: HttpHandler): Observable<HttpEvent<any>> {
-        if (request.url.includes("localhost:8081")) {
+        if (request.url.includes("server.enslerman.ru")) {
             request = request.clone({
                 withCredentials: true,
                 // setHeaders: {
