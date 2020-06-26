@@ -15,10 +15,10 @@ stages:
  build-front:
   dir: project/view
   instructions:
-  - sh: BUILD FRONT
+  - sh: echo BUILD FRONT
   - sh: npm i
   - sh: ng build
   - copy:
      target: dist/view
      dist: /home/ensler
-  - sh: complete
+  - sh: echo complete
