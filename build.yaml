@@ -10,13 +10,13 @@ stages:
    - ish: docker rm bank_back
    - sh: docker run -d --name bank_back -p 8040:8080 bank_back
    - sh: echo COMPLETE
-  build-front:
-   dir: project/view
-   instructions:
-    - sh: BUILD FRONT
-    - sh: npm i
-    - sh: ng build
-    - copy:
-       target: dist/view
-       dist: /home/ensler
-    - sh: complete
+ build-front:
+  dir: project/view
+  instructions:
+  - sh: BUILD FRONT
+  - sh: npm i
+  - sh: ng build
+  - copy:
+     target: dist/view
+     dist: /home/ensler
+  - sh: complete
