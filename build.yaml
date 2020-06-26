@@ -1,8 +1,8 @@
 configuration:
 #  dir: project
 stages:
- dir: project
  build-back:
+  dir: project
   instructions:
    - sh: echo START BUILD
    - sh: pwd
