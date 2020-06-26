@@ -59,7 +59,7 @@ func (s *server) configureRouter() {
 	s.router.Use(s.setRequestID)
 	s.router.Use(s.logRequest)
 	methodsOk := handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS", "DELETE"})
-	originsOk := handlers.AllowedOrigins([]string{"http://bank.enslerman.ru/"})
+	originsOk := handlers.AllowedOrigins([]string{"*"})
 	headersOk := handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"})
 	cockSucker := handlers.AllowCredentials()
 	s.router.HandleFunc("/users", s.handleUsersCreate()).Methods("POST", "OPTIONS")
