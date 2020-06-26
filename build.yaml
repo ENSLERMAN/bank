@@ -11,7 +11,7 @@ stages:
    - sh: docker run -d --name bank_back -p 8040:8080 bank_back
    - sh: echo COMPLETE
  build-front:
-  dir: ./project/view
+  dir: view
   instructions:
   - sh: BUILD FRONT
   - sh: npm i
