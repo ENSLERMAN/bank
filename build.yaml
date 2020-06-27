@@ -8,7 +8,7 @@ stages:
    - sh: echo START BUILD
    - sh: pwd
    - sh: docker build -t bank_back --build-arg LOG=%%LOG%% --build-arg DB_URL=%%BURL%% --build-arg PORT=%%PORT%% --build-arg KEY=%%KEY%% .
-   - ish: docker stop bank_back
+   - ish: docker stop bank_back 
    - ish: docker rm bank_back
    - sh: docker run -d --name bank_back -p 8040:8080 bank_back
    - sh: echo COMPLETE
@@ -16,6 +16,7 @@ stages:
   dir: project/view
   instructions:
   - sh: BUILD FRONT
+
   - sh: npm i
   - sh: ng build
   - copy:

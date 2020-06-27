@@ -1,0 +1,64 @@
+<div class="mat-spin" [style.display]="visibility==true?'block':'none'">
+    <mat-progress-spinner mode="indeterminate" color="accent"></mat-progress-spinner>
+</div>
+
+<div class="mb-3">
+    <div class="d-flex justify-content-between align-items-center align-self-center mt-3" style="height: 36px">
+        <div class="privet">{{this.Text}}</div>
+    </div>
+</div>
+
+<div [style.display]="visibility==false?'block':'none'">
+        <div class="row row-cols-1 row-cols-md-3 row-cols-lg-4 row-cols-sm-2">
+            <ng-container *ngFor="let item of Bills">
+                <div class="mb-3 col">
+                    <mat-card class="d-flex flex-column h-100" [routerLink]="['/card', item.id]">
+                        <h1>Баланс: {{item.money}} ₽</h1>
+                        <h1 class="mb-0 mr-1">**** **** **** {{item.number}}</h1>
+                        <div class="d-flex align-items-center">
+                            <h3 class="mr-auto mb-0">{{item.name}}</h3>
+                            <img [src]="item.img" alt="card image" class="cardImg">
+                        </div>
+                    </mat-card>
+                </div>
+            </ng-container>
+
+            <div class="col mb-3" routerLink="/send_money">
+                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
+                    <img src="assets/icons/SendMoney.png" alt="" class="icons">
+                    <h3>Перевести деньги</h3>
+                </mat-card>
+            </div>
+
+            <div class="col mb-3" (click)="openDialog()">
+                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
+                    <img src="assets/icons/openNewCard.png" alt="" class="icons">
+                    <h3>Открыть новый счёт</h3>
+                </mat-card>
+            </div>
+
+            <div class="col mb-3" *ngIf="rate" routerLink="/daily_rate">
+                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
+                    <h2>Курс на сегодня</h2>
+                    <h1>$ = {{this.rate.Valute?.USD?.Value}} ₽</h1>
+                    <h1>€ = {{this.rate.Valute?.EUR?.Value}} ₽</h1>
+                </mat-card>
+            </div>
+
+            <div class="col mb-3" routerLink="/history">
+                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
+                    <img src="assets/icons/paymentHistory.png" alt="" class="icons">
+                    <h3>История переводов</h3>
+                </mat-card>
+            </div>
+
+            <div class="col mb-3" routerLink="/payments">
+                <mat-card class="h-100 d-flex flex-column justify-content-center align-items-center">
+                    <img src="assets/icons/OnlineStore.png" alt="" class="icons">
+                    <h3>Оплатить покупки</h3>
+                </mat-card>
+            </div>
+
+        </div>
+
+</div>

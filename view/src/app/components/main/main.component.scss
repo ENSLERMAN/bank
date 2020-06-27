@@ -1,0 +1,36 @@
+.mat-grid-tile {
+  border: solid 2px grey;
+  border-radius: 5px;
+}
+.cardImg {
+  width: 50px;
+  height: auto;
+  object-fit: contain;
+}
+
+.mat-card {
+  background: #424242;
+  transition: transform 0.5s;
+}
+
+.mat-card:hover {
+  transform: translate(0, -10px);
+  cursor: pointer;
+  background: #494949;
+}
+
+.icons {
+  width: 75px;
+  height: auto;
+  object-fit: contain;
+}
+
+div.col {
+  outline: none !important;
+}
+
+.privet {
+  margin: 0 !important;
+  font: 500 20px/32px Roboto, "Helvetica Neue", sans-serif;
+  letter-spacing: normal;
+}
